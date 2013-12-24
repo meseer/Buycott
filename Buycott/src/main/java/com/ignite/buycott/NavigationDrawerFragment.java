@@ -1,6 +1,5 @@
 package com.ignite.buycott;
 
-;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -20,7 +19,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -244,12 +244,17 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         switch (item.getItemId()) {
-            case R.id.action_example:
-                Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+            case R.id.action_scan:
+                onScan();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onScan() {
+        IntentIntegrator integrator = new IntentIntegrator(getActivity());
+        integrator.initiateScan();
     }
 
     /**

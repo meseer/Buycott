@@ -1,22 +1,22 @@
 package com.ignite.buycott;
 
 import android.app.Activity;
-;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -100,6 +100,20 @@ public class MainActivity extends Activity
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult != null) {
+            String code = scanResult.getContents();
+            Toast.makeText(this, "Scanned code: " + code, Toast.LENGTH_SHORT).show();
+
+            // handle scan result
+        } else {
+            Toast.makeText(this, "Scan failed", Toast.LENGTH_SHORT).show();
+            // else continue with any other code you need in the method
+            //...
+        }
     }
 
     /**
