@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,10 +27,14 @@ public class NovusCrawler extends WebCrawler {
     private final static Pattern PRODUCT_PAGE = Pattern.compile("/0*(\\d{9,})/");
     private final static Pattern BRAND_NAME = Pattern.compile("<span itemprop=\"brand\">(.*)</span>");
 
-    CSVWriter writer;
+    private static CSVWriter writer;
 
-    public NovusCrawler() throws IOException {
-        writer = new CSVWriter(new FileWriter("data.csv"), '\t');
+    static {
+        try {
+            writer = new CSVWriter(new FileWriter("data.csv"), '\t');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -90,14 +93,18 @@ public class NovusCrawler extends WebCrawler {
 //                System.out.println("Maker code: " + urlData.makerCode);
 //                System.out.println("Brand name: " + brand==null?"N/A":brand);
 
-                try {
-                    writer.writeNext(new String[] {Integer.toString(urlData.countryCode), Integer.toString(urlData.makerCode),
-                            urlData.barcode, brand, URLDecoder.decode(url, "UTF-8"), title.replaceAll("\n", " ")});
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                write(url, urlData, brand, title);
 
             }
+        }
+    }
+
+    private synchronized void write(String url, UrlData urlData, String brand, String title) {
+        try {
+            writer.writeNext(new String[] {Integer.toString(urlData.countryCode), Integer.toString(urlData.makerCode),
+                    urlData.barcode, brand, URLDecoder.decode(url, "UTF-8"), title.replaceAll("\n", " ")});
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
     }
 
