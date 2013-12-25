@@ -1,0 +1,17 @@
+apply plugin: 'java'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile(
+            'edu.uci.ics:crawler4j:+',
+            'net.sf.opencsv:opencsv:2.+',
+            'junit:junit:+'
+    )
+//    test(
+//    )
+}
