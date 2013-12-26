@@ -4,6 +4,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +35,7 @@ public class NovusCrawler extends WebCrawler {
     private final static Pattern BRAND_NAME = Pattern.compile("<span itemprop=\"brand\">(.*)</span>");
 
     private static CSVWriter writer;
+    private static ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Set<String>>> countryMakerMap = new ConcurrentHashMap<>();
 
     static {
         try {
@@ -56,6 +64,23 @@ public class NovusCrawler extends WebCrawler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //dump mapping
+        try(CSVWriter mappingWriter = new CSVWriter(new FileWriter("mapping.csv"), ',')) {
+            for (ConcurrentHashMap.Entry<Integer, ConcurrentHashMap<Integer, Set<String>>> countryMaker: countryMakerMap.entrySet()) {
+                for (ConcurrentHashMap.Entry<Integer, Set<String>> makerBrand : countryMaker.getValue().entrySet()) {
+                    String[] row = new String[makerBrand.getValue().size() + 2];
+                    row[0] = countryMaker.getKey().toString();
+                    row[1] = makerBrand.getKey().toString();
+                    int position = 2;
+                    for (String brand : makerBrand.getValue()) row[position++] = brand;
+
+                    mappingWriter.writeNext(row);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -68,18 +93,9 @@ public class NovusCrawler extends WebCrawler {
 
         UrlData urlData = parseUrl(url);
         if (urlData.isProduct()) {
-//            System.out.println("URL: " + urlData.url);
-//            System.out.println("Barcode: " + urlData.barcode);
-
             if (page.getParseData() instanceof HtmlParseData) {
                 HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-//                String text = htmlParseData.getText();
                 String html = htmlParseData.getHtml();
-//                List<WebURL> links = htmlParseData.getOutgoingUrls();
-
-                //Brand: //*[@itemprop="brand"]/text()
-                //Product name: //*[@itemprop="name"]/text()
-                //
 
                 String brand = null;
                 Matcher matcher = BRAND_NAME.matcher(html);
@@ -88,15 +104,23 @@ public class NovusCrawler extends WebCrawler {
                 }
 
                 String title = htmlParseData.getTitle();
-//                System.out.println("Title: " + title);
-//                System.out.println("Country code: " + urlData.countryCode);
-//                System.out.println("Maker code: " + urlData.makerCode);
-//                System.out.println("Brand name: " + brand==null?"N/A":brand);
 
                 write(url, urlData, brand, title);
-
+                addToMap(urlData, brand);
             }
         }
+    }
+
+    private void addToMap(UrlData urlData, String brand) {
+        if (!countryMakerMap.containsKey(urlData.countryCode))
+            countryMakerMap.putIfAbsent(urlData.countryCode, new ConcurrentHashMap<Integer, Set<String>>());
+
+        ConcurrentHashMap<Integer, Set<String>> makerMap = countryMakerMap.get(urlData.countryCode);
+        if (!makerMap.containsKey(urlData.makerCode))
+            makerMap.putIfAbsent(urlData.makerCode, Collections.synchronizedSet(new HashSet<String>()));
+
+        Set<String> brands = makerMap.get(urlData.makerCode);
+        brands.add(brand);
     }
 
     private synchronized void write(String url, UrlData urlData, String brand, String title) {
@@ -116,6 +140,4 @@ public class NovusCrawler extends WebCrawler {
             return new UrlData(url, null);
         }
     }
-
-
 }

@@ -1,1 +1,1 @@
-include ':Buycott', ':NovusCrawler'
+include ':Boycott', ':CrawlerZakazUA'

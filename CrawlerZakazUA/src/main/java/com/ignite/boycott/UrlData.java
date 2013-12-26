@@ -17,7 +17,7 @@ public class UrlData {
 
     private void parseBarcode() {
         countryCode = Integer.valueOf(barcode.substring(0, 3));
-        makerCode = Integer.valueOf(barcode.substring(3, 7));
+        makerCode = Integer.valueOf(barcode.substring(3, 8));
     }
 
     public boolean isProduct() { return barcode != null; };

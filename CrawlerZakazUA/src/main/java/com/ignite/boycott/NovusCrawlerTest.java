@@ -25,7 +25,7 @@ public class NovusCrawlerTest {
         assertTrue(data.isProduct());
         assertEquals("4820006259280", data.barcode);
         assertEquals(482, data.countryCode);
-        assertEquals(0006, data.makerCode);
+        assertEquals(62, data.makerCode);
     }
 
     @org.junit.Test
@@ -34,7 +34,7 @@ public class NovusCrawlerTest {
         assertTrue(data.isProduct());
         assertEquals("5760466815338", data.barcode);
         assertEquals(576, data.countryCode);
-        assertEquals(466, data.makerCode);
+        assertEquals(4668, data.makerCode);
     }
 
     @org.junit.Test
