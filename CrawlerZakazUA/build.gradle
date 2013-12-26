@@ -11,7 +11,6 @@ dependencies {
     compile(
             'edu.uci.ics:crawler4j:+',
             'net.sf.opencsv:opencsv:2.+',
-            'com.google.guava:guava:+',
             'junit:junit:+'
     )
 //    test(
