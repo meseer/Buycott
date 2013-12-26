@@ -1,4 +1,4 @@
-package com.ignite.buycott;
+package com.ignite.boycott;
 
 import android.app.Activity;
 import android.app.ActionBar;
