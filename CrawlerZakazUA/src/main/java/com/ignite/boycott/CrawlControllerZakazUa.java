@@ -6,7 +6,7 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
-public class NovusCrawlController {
+public class CrawlControllerZakazUa {
     public static void main(String[] args) throws Exception {
         String crawlStorageFolder = "/data/crawl/root";
         int numberOfCrawlers = 7;
@@ -33,6 +33,6 @@ public class NovusCrawlController {
          * Start the crawl. This is a blocking operation, meaning that your code
          * will reach the line after this only when crawling is finished.
          */
-        controller.start(NovusCrawler.class, numberOfCrawlers);
+        controller.start(CrawlerZakazUa.class, numberOfCrawlers);
     }
 }

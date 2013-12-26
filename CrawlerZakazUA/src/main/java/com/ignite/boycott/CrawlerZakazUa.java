@@ -23,7 +23,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 /**
  * Created by mdelegan on 25.12.13.
  */
-public class NovusCrawler extends WebCrawler {
+public class CrawlerZakazUa extends WebCrawler {
 
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g"
             + "|png|tiff?|mid|mp2|mp3|mp4"
@@ -39,7 +39,7 @@ public class NovusCrawler extends WebCrawler {
 
     static {
         try {
-            writer = new CSVWriter(new FileWriter("data.csv"), '\t');
+            writer = new CSVWriter(new FileWriter("c:\\Users\\mdelegan\\Диск Google\\projects\\Boycott\\data.csv"), '\t');
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +66,7 @@ public class NovusCrawler extends WebCrawler {
         }
 
         //dump mapping
-        try(CSVWriter mappingWriter = new CSVWriter(new FileWriter("mapping.csv"), ',')) {
+        try(CSVWriter mappingWriter = new CSVWriter(new FileWriter("c:\\Users\\mdelegan\\Диск Google\\projects\\Boycott\\mapping.csv"), ',')) {
             for (ConcurrentHashMap.Entry<Integer, ConcurrentHashMap<Integer, Set<String>>> countryMaker: countryMakerMap.entrySet()) {
                 for (ConcurrentHashMap.Entry<Integer, Set<String>> makerBrand : countryMaker.getValue().entrySet()) {
                     String[] row = new String[makerBrand.getValue().size() + 2];
