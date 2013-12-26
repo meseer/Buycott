@@ -39,7 +39,7 @@ public class CrawlerZakazUa extends WebCrawler {
 
     static {
         try {
-            writer = new CSVWriter(new FileWriter("c:\\Users\\mdelegan\\Диск Google\\projects\\Boycott\\data.csv"), '\t');
+            writer = new CSVWriter(new FileWriter("data.csv"), ',');
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,7 +66,7 @@ public class CrawlerZakazUa extends WebCrawler {
         }
 
         //dump mapping
-        try(CSVWriter mappingWriter = new CSVWriter(new FileWriter("c:\\Users\\mdelegan\\Диск Google\\projects\\Boycott\\mapping.csv"), ',')) {
+        try(CSVWriter mappingWriter = new CSVWriter(new FileWriter("mapping.csv"), ',')) {
             for (ConcurrentHashMap.Entry<Integer, ConcurrentHashMap<Integer, Set<String>>> countryMaker: countryMakerMap.entrySet()) {
                 for (ConcurrentHashMap.Entry<Integer, Set<String>> makerBrand : countryMaker.getValue().entrySet()) {
                     String[] row = new String[makerBrand.getValue().size() + 2];
