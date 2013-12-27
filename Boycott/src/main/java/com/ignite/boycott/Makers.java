@@ -23,7 +23,7 @@ public class Makers extends SQLiteAssetHelper {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         qb.setTables("makers");
-        String[] sqlSelect = {"CountryCode", "ProductCode", "Barcode as _id", "Maker", "Url", "Title"};
+        String[] sqlSelect = {"CountryCode", "ProductCode", "Barcode as _id", "Maker", "Title"};
         Cursor c = qb.query(db, sqlSelect,
                 "_id = " + barcode, null, null, null, null);
 
