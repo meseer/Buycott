@@ -105,7 +105,8 @@ public class CrawlerZakazUa extends WebCrawler {
 
                 String title = htmlParseData.getTitle();
 
-                write(url, urlData, brand, title);
+                String description = extractDescription(title);
+                write(url, urlData, brand, description);
                 addToMap(urlData, brand);
             }
         }
@@ -123,13 +124,15 @@ public class CrawlerZakazUa extends WebCrawler {
         brands.add(brand);
     }
 
-    private synchronized void write(String url, UrlData urlData, String brand, String title) {
-        try {
-            writer.writeNext(new String[] {Integer.toString(urlData.countryCode), Integer.toString(urlData.makerCode),
-                    urlData.barcode, brand, URLDecoder.decode(url, "UTF-8"), title.replaceAll("\n", " ")});
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+    private synchronized void write(String url, UrlData urlData, String brand, String description) {
+        writer.writeNext(new String[] {Integer.toString(urlData.countryCode), Integer.toString(urlData.makerCode),
+                urlData.barcode, brand, description});
+    }
+
+    private String extractDescription(String title) {
+        String titleStripped = title.replaceAll("\n", " ");
+        titleStripped = titleStripped.substring(0, titleStripped.indexOf('→'));
+        return titleStripped;
     }
 
     UrlData parseUrl(String url) {
