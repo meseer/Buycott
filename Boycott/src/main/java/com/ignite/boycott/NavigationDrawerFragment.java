@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.google.zxing.integration.android.IntentIntegrator;
+import com.ignite.buycott.R;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.

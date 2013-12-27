@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+    <TextView android:id="@+id/maker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        />
+
+    <TextView android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/maker"
+        android:layout_alignStart="@id/maker"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+    <TextView android:id="@+id/barcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_alignStart="@id/title"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+    <TextView android:id="@+id/makercode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/barcode"
+        android:layout_alignStart="@id/barcode"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+    </LinearLayout>

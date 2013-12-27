@@ -37,8 +37,8 @@ dependencies {
             'com.android.support:support-v4:+',
             'com.google.zxing:core:+',
             'com.google.zxing:android-integration:+',
-            'com.google.zxing:zxingorg:+',
-            'com.google.zxing:javase:+'
+            'com.google.zxing:javase:+',
+            files('libs/android-sqlite-asset-helper.jar')
     )
 
 }
