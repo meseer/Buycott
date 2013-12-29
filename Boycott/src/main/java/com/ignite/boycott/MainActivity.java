@@ -115,22 +115,39 @@ public class MainActivity extends Activity
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String code = scanResult.getContents();
-            Toast.makeText(this, "Scanned code: " + code, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.scanned_code + code, Toast.LENGTH_SHORT).show();
             try {
-                Cursor product = new Makers(this).getProduct(code);
-                //TODO: this is quick and dirty, use LoaderManager with a CursorLoader for proper implementation
-                ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.productrow, product,
-                        new String[] {"_id", "ProductCode", "Maker", "Title"},
-                        new int[] { R.id.barcode, R.id.makercode, R.id.maker, R.id.title });
+                Makers makersDb = new Makers(this);
+                Cursor product = makersDb.getProduct(code);
+                if (product.getCount() == 0)
+                    product = makersDb.getMaker(code);
 
-                mListView.setAdapter(adapter);
+                if (product.getCount() > 0) {
+                    product.moveToFirst();
+                    String maker = product.getString(product.getColumnIndexOrThrow("Maker"));
+                    //TODO: this is quick and dirty, use LoaderManager with a CursorLoader for proper implementation
+                    ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.productrow, product,
+                            new String[] {"_id", "MakerCode", "Maker", "Title"},
+                            new int[] { R.id.barcode, R.id.makercode, R.id.maker, R.id.title });
+
+                    mListView.setAdapter(adapter);
+
+                    Cursor blacklisted = makersDb.getBlacklisted(maker);
+                    if (blacklisted.getCount() > 0) {
+                        Toast.makeText(this, "Blacklisted", Toast.LENGTH_LONG).show();
+                        mListView.setBackgroundColor(0xff0000);
+                    } else {
+                        Toast.makeText(this, "Clean", Toast.LENGTH_LONG).show();
+                        mListView.setBackgroundColor(0x00ff00);
+
+                } else {
+                        Toast.makeText(this, R.string.maker_not_found, Toast.LENGTH_LONG).show();
+                }
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(this, "Scan failed", Toast.LENGTH_SHORT).show();
-            // else continue with any other code you need in the method
-            //...
+            Toast.makeText(this, R.string.scan_failed, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -163,8 +180,7 @@ public class MainActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            //TODO: Draw results somewhere here
             return rootView;
         }
 
