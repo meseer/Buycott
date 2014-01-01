@@ -36,6 +36,7 @@ public class CrawlerZakazUa extends WebCrawler {
 
     private static CSVWriter writer;
     private static ConcurrentHashMap<Integer, ConcurrentHashMap<Integer, Set<String>>> countryMakerMap = new ConcurrentHashMap<>();
+    private static Set<String> checkedProducts = new HashSet<>();
 
     static {
         try {
@@ -53,7 +54,16 @@ public class CrawlerZakazUa extends WebCrawler {
     @Override
     public boolean shouldVisit(WebURL url) {
         String href = url.getURL().toLowerCase();
-        return !FILTERS.matcher(href).matches() && href.startsWith("http://zakaz.ua/uk/");
+        if (FILTERS.matcher(href).matches() || !href.startsWith("http://zakaz.ua/uk/")) return false;
+
+        UrlData data = parseUrl(url.getURL());
+
+        synchronized(checkedProducts) {
+            if (data.barcode == null || checkedProducts.contains(data.barcode)) return false;
+            checkedProducts.add(data.barcode);
+        }
+
+        return true;
     }
 
     @Override
