@@ -4,9 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.text.TextUtils;
 
 import com.ignite.buycott.R;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
+
+import java.util.List;
 
 /**
  * Created by meseer on 27.12.13.
@@ -19,14 +22,14 @@ public class Makers extends SQLiteAssetHelper {
         super(context, name, null, version);
     }
 
-    public Cursor getBlacklisted(String maker) {
+    public Cursor getBlacklisted(List<String> maker) {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         qb.setTables("blacklist");
         String[] sqlSelect = {"_id", "Maker", "Type", "Owner", "Affiliation", "Alternative"};
         Cursor c = qb.query(db, sqlSelect,
-                "Maker = '" + maker + "'", null, null, null, null);
+                "Maker in ('" + TextUtils.join(",", maker) + "')", null, null, null, null);
 
         return c;
     }
@@ -53,7 +56,7 @@ public class Makers extends SQLiteAssetHelper {
         qb.setTables("makers");
         String[] sqlSelect = {"MakerCode", "Barcode as _id", "Maker", "'" + R.string.n_a + "' as Title"};
         Cursor c = qb.query(db, sqlSelect,
-                "MakerCode = " + makerCode + " and Maker <> '' and CountryCode = " + countryCode, null, null, null, null, "1");
+                "MakerCode = " + makerCode + " and Maker <> '' and CountryCode = " + countryCode, null, "Maker", null, null);
 
         return c;
     }

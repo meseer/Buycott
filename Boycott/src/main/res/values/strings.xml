@@ -12,7 +12,9 @@
     <string name="scan_hint">Scan product barcode</string>
     <string name="scan_failed">Scan failed</string>
     <string name="maker_not_found">Maker not found</string>
-    <string name="scanned_code">Scanned code</string>
+    <string name="scanned_code">Scanned barcode %s</string>
+    <string name="clean">Clean</string>
+    <string name="blacklisted">Blacklisted</string>
     <string name="n_a">N/A</string>
 
 </resources>

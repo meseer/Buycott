@@ -2,41 +2,36 @@ package com.ignite.boycott;
 
 import android.app.Activity;
 import android.app.ActionBar;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.GridView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ignite.buycott.R;
 
-public class MainActivity extends Activity
+public class MainActivity extends FragmentActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private ScanResultsFragment mScanResultsFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +39,8 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
-
-        mListView = (ListView)findViewById(R.id.listView);
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
@@ -58,14 +51,25 @@ public class MainActivity extends Activity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment newFragment;
+        switch(position) {
+            case 0:
+                if (mScanResultsFragment == null) {
+                    mScanResultsFragment = new ScanResultsFragment();
+                }
+                newFragment = mScanResultsFragment;
+                break;
+            default:
+                newFragment = PlaceholderFragment.newInstance(position + 1);
+        }
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, newFragment)
                 .commit();
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
+    public void onSectionAttached(int position) {
+        switch(position) {
             case 1:
                 mTitle = getString(R.string.title_section1);
                 break;
@@ -115,39 +119,10 @@ public class MainActivity extends Activity
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String code = scanResult.getContents();
-            Toast.makeText(this, R.string.scanned_code + code, Toast.LENGTH_SHORT).show();
-            try {
-                Makers makersDb = new Makers(this);
-                Cursor product = makersDb.getProduct(code);
-                if (product.getCount() == 0)
-                    product = makersDb.getMaker(code);
-
-                if (product.getCount() > 0) {
-                    product.moveToFirst();
-                    String maker = product.getString(product.getColumnIndexOrThrow("Maker"));
-                    //TODO: this is quick and dirty, use LoaderManager with a CursorLoader for proper implementation
-                    ListAdapter adapter = new SimpleCursorAdapter(this, R.layout.productrow, product,
-                            new String[] {"_id", "MakerCode", "Maker", "Title"},
-                            new int[] { R.id.barcode, R.id.makercode, R.id.maker, R.id.title });
-
-                    mListView.setAdapter(adapter);
-
-                    Cursor blacklisted = makersDb.getBlacklisted(maker);
-                    if (blacklisted.getCount() > 0) {
-                        Toast.makeText(this, "Blacklisted", Toast.LENGTH_LONG).show();
-                        mListView.setBackgroundColor(0xff0000);
-                    } else {
-                        Toast.makeText(this, "Clean", Toast.LENGTH_LONG).show();
-                        mListView.setBackgroundColor(0x00ff00);
-
-                } else {
-                        Toast.makeText(this, R.string.maker_not_found, Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            Toast.makeText(this, getString(R.string.scanned_code, code), Toast.LENGTH_SHORT).show();
+            mScanResultsFragment.onScanResult(code);
         } else {
-            Toast.makeText(this, R.string.scan_failed, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
         }
     }
 
