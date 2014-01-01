@@ -139,7 +139,7 @@ public class MainActivity extends Activity
                     } else {
                         Toast.makeText(this, "Clean", Toast.LENGTH_LONG).show();
                         mListView.setBackgroundColor(0x00ff00);
-
+                    }
                 } else {
                         Toast.makeText(this, R.string.maker_not_found, Toast.LENGTH_LONG).show();
                 }
