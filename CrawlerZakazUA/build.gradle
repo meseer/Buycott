@@ -11,9 +11,9 @@ repositories {
 dependencies {
     compile(
             'edu.uci.ics:crawler4j:+',
-            'net.sf.opencsv:opencsv:2.+',
+            'net.sf.opencsv:opencsv:2.+'
+    )
+    testCompile(
             'junit:junit:+'
     )
-//    test(
-//    )
 }
