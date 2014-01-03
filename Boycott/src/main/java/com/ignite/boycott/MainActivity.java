@@ -52,20 +52,25 @@ public class MainActivity extends FragmentActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment newFragment;
+        String scanResultsTag = "ScanResultsTag";
         switch(position) {
             case 0:
                 if (mScanResultsFragment == null) {
-                    mScanResultsFragment = new ScanResultsFragment();
+                    mScanResultsFragment = (ScanResultsFragment) fragmentManager.findFragmentByTag(scanResultsTag);
+                    if (mScanResultsFragment == null) {
+                        mScanResultsFragment = new ScanResultsFragment();
+                    }
                 }
-                newFragment = mScanResultsFragment;
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, mScanResultsFragment, scanResultsTag)
+                        .commit();
                 break;
             default:
-                newFragment = PlaceholderFragment.newInstance(position + 1);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .commit();
         }
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, newFragment)
-                .commit();
     }
 
     public void onSectionAttached(int position) {

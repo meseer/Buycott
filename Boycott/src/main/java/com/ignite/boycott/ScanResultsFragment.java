@@ -9,6 +9,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
@@ -34,21 +35,34 @@ public class ScanResultsFragment extends ListFragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        setRetainInstance(true);
+
+        if (savedInstanceState != null && barcode == null) {
+            barcode = savedInstanceState.getString(ARG_BARCODE);
+        }
+
+        if (getListAdapter() == null) {
+            SimpleCursorAdapter adapter = new SimpleCursorAdapter(getActivity(), R.layout.productrow, null,
+                    new String[] {"_id", "MakerCode", "Maker", "Title"},
+                    new int[] { R.id.barcode, R.id.makercode, R.id.maker, R.id.title });
+            setListAdapter(adapter);
+        }
+
+        if (barcode != null) {
+            //TODO: Load data in background
+            //TODO: Cache results, don't hit database on rotate (use custom adapter?)
+            processBarcode();
+        }
+        return v;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (barcode != null) {
             outState.putString(ARG_BARCODE, barcode);
-        }
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null && barcode == null) {
-            barcode = savedInstanceState.getString(ARG_BARCODE);
-        }
-        if (barcode != null) {
-            processBarcode();
         }
     }
 
@@ -63,24 +77,23 @@ public class ScanResultsFragment extends ListFragment {
 
             if (product.getCount() > 0) {
                 //TODO: this is quick and dirty, use LoaderManager with a CursorLoader for proper implementation
-                ListAdapter adapter = new SimpleCursorAdapter(this.getActivity(), R.layout.productrow, product,
-                        new String[] {"_id", "MakerCode", "Maker", "Title"},
-                        new int[] { R.id.barcode, R.id.makercode, R.id.maker, R.id.title });
 
-                setListAdapter(adapter);
+                ((SimpleCursorAdapter)getListAdapter()).changeCursor(product);
 
                 if (isBlacklisted(makersDb, product)) {
                     toast(R.string.blacklisted);
-                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+                    //causes error: content view not yet created
+//                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
                 } else {
                     toast(R.string.clean);
-                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+//                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
                 }
             } else {
                 toast(R.string.maker_not_found);
             }
         } catch (Exception e) {
             Toast.makeText(this.getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+            throw e;
         }
     }
 
@@ -108,5 +121,6 @@ public class ScanResultsFragment extends ListFragment {
 
     public void onScanResult(String code) {
         this.barcode = code;
+        processBarcode();
     }
 }
