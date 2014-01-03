@@ -16,5 +16,6 @@
     <string name="clean">Clean</string>
     <string name="blacklisted">Blacklisted</string>
     <string name="n_a">N/A</string>
+    <string name="press_scan">Press \'<b>Scan</b>\' to scan barcode</string>
 
 </resources>

@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         />
 
-    <TextView android:id="@+id/makercode"
+    <TextView android:id="@+id/owner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/barcode"

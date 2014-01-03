@@ -22,24 +22,12 @@ public class Makers extends SQLiteAssetHelper {
         super(context, name, null, version);
     }
 
-    public Cursor getBlacklisted(List<String> maker) {
-        SQLiteDatabase db = getReadableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-
-        qb.setTables("blacklist");
-        String[] sqlSelect = {"_id", "Maker", "Type", "Owner", "Affiliation", "Alternative"};
-        Cursor c = qb.query(db, sqlSelect,
-                "Maker in ('" + TextUtils.join(",", maker) + "')", null, null, null, null);
-
-        return c;
-    }
-
     public Cursor getProduct(String barcode) {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        qb.setTables("makers");
-        String[] sqlSelect = {"MakerCode", "Barcode as _id", "Maker", "Title"};
+        qb.setTables("makers m left outer join blacklist b on m.Maker = b.Maker");
+        String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "Title", "Type", "Owner", "Affiliation"};
         Cursor c = qb.query(db, sqlSelect,
                 "_id = " + barcode, null, null, null, null);
 
@@ -53,10 +41,20 @@ public class Makers extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        qb.setTables("makers");
-        String[] sqlSelect = {"MakerCode", "Barcode as _id", "Maker", "'" + R.string.n_a + "' as Title"};
+        qb.setTables("makers m left outer join blacklist b on m.Maker = b.Maker");
+        String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "'" + R.string.n_a + "' as Title",
+                              "Type", "Owner", "Affiliation"};
         Cursor c = qb.query(db, sqlSelect,
-                "MakerCode = " + makerCode + " and Maker <> '' and CountryCode = " + countryCode, null, "Maker", null, null);
+                "MakerCode = " + makerCode + " and m.Maker <> '' and CountryCode = " + countryCode,
+                null, "m.Maker", "length(Barcode) = 13", "Owner desc");
+
+        return c;
+    }
+
+    public Cursor getProductOrMakers(String barcode) {
+        Cursor c = getProduct(barcode);
+        if (c.getCount() == 0 && barcode.length() == 13)
+            c = getMaker(barcode);
 
         return c;
     }
