@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Buycott</string>
+    <string name="app_name">Boycott</string>
     <string name="title_section1">Scanner</string>
     <string name="title_section2">Catalog</string>
     <string name="title_section3">History</string>
@@ -15,7 +15,7 @@
     <string name="scanned_code">Scanned barcode %s</string>
     <string name="clean">Clean</string>
     <string name="blacklisted">Blacklisted</string>
-    <string name="n_a">N/A</string>
+    <string name="n_a">Unknown product</string>
     <string name="press_scan">Press \'<b>Scan</b>\' to scan barcode</string>
 
 </resources>

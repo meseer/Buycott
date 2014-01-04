@@ -38,7 +38,25 @@ dependencies {
             'com.google.zxing:core:+',
             'com.google.zxing:android-integration:+',
             'com.google.zxing:javase:+',
-            files('libs/android-sqlite-asset-helper.jar')
+            files('libs/android-sqlite-asset-helper.jar',
+                  'libs/CWAC-LoaderEx.jar')
     )
 
+    //TODO: Investigate how to make this work, see http://x.co/3XxAL
+//    compile module('jgilfelt:android-sqlite-asset-helper:latest') {
+//        artifact {
+//            name = 'android-sqlite-asset-helper'
+//            extension = 'jar'
+//            type = 'jar'
+//            url = 'https://github.com/jgilfelt/android-sqlite-asset-helper/blob/master/lib/android-sqlite-asset-helper.jar?raw=true'
+//        }
+//    }
+//    compile module('commonsguy:cwac-loaderex:0.7.3') {
+//        artifact {
+//            name = 'cwac-loaderex'
+//            extension = 'jar'
+//            type = 'jar'
+//            url = 'https://github.com/commonsguy/cwac-loaderex/releases/download/v0.7.3/CWAC-LoaderEx.jar'
+//        }
+//    }
 }

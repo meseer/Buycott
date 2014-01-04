@@ -2,24 +2,23 @@ package com.ignite.boycott;
 
 import android.app.Activity;
 import android.app.ActionBar;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
 import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ignite.buycott.R;
 
-public class MainActivity extends FragmentActivity
+public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -39,7 +38,7 @@ public class MainActivity extends FragmentActivity
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
-                getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
 
         // Set up the drawer.
@@ -51,7 +50,7 @@ public class MainActivity extends FragmentActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getFragmentManager();
         String scanResultsTag = "ScanResultsTag";
         switch(position) {
             case 0:
@@ -124,7 +123,6 @@ public class MainActivity extends FragmentActivity
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String code = scanResult.getContents();
-            Toast.makeText(this, getString(R.string.scanned_code, code), Toast.LENGTH_SHORT).show();
             mScanResultsFragment.onScanResult(code);
         } else {
             Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();

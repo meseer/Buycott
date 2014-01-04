@@ -1,18 +1,16 @@
 package com.ignite.boycott;
 
 import android.app.Activity;
+import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.commonsware.cwac.loaderex.SQLiteCursorLoader;
 import com.ignite.buycott.R;
 
 /**
@@ -61,41 +59,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
                 new int[] { R.id.barcode, R.id.owner, R.id.maker, R.id.title }, 0);
         setListAdapter(mAdapter);
 
-//        getLoaderManager().initLoader(0, null, this);
-
-        if (barcode != null) {
-            //TODO: Load data in background
-            //TODO: Cache results, don't hit database on rotate (use custom adapter?)
-            processBarcode();
-        }
-
-    }
-
-    private void processBarcode() {
-        if (barcode == null || this.getActivity() == null) return;
-
-        try {
-            Cursor cursor = mDb.getProductOrMakers(barcode);
-
-            if (cursor.getCount() > 0) {
-                //TODO: this is quick and dirty, use LoaderManager with a CursorLoader for proper implementation
-                mAdapter.swapCursor(cursor);
-
-                if (isBlacklisted(cursor)) {
-                    toast(R.string.blacklisted);
-                    //causes error: content view not yet created
-                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-                } else {
-                    toast(R.string.clean);
-                    getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                }
-            } else {
-                toast(R.string.maker_not_found);
-            }
-        } catch (Exception e) {
-            Toast.makeText(this.getActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
-            Log.e("ScanResults", "Failed to process barcode " + barcode, e);
-        }
+        getLoaderManager().initLoader(0, null, this);
     }
 
     private boolean isBlacklisted(Cursor product) {
@@ -116,20 +80,47 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
 
     public void onScanResult(String code) {
         this.barcode = code;
-//        getLoaderManager().restartLoader(0, null, this);
-        processBarcode();
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return null;
+        String sql = "select Barcode as _id, m.Maker as Maker, '" + getString(R.string.n_a) + "' as Title, " +
+                "NULL as Type, NULL as Owner, NULL as Affiliation \n" +
+                "from makers m where 1 = 2 and MakerCode = ? and CountryCode = ?";
+
+        Integer countryCode = 0;
+        Integer makerCode = 0;
+
+        if (barcode != null) {
+            countryCode = Integer.valueOf(barcode.substring(0,3));
+            makerCode = Integer.valueOf(barcode.substring(3, 8));
+
+            sql = "select Barcode as _id, m.Maker as Maker, '" + getString(R.string.n_a) + "' as Title, Type, Owner, Affiliation \n" +
+                    "from makers m left outer join blacklist b on m.Maker = b.Maker\n" +
+                    "where MakerCode = ? and m.Maker <> '' and CountryCode = ?\n" +
+                    "group by m.Maker\n" +
+                    "having length(Barcode) = 13\n" +
+                    "order by Owner desc";
+        }
+
+        return new SQLiteCursorLoader(this.getActivity(), mDb, sql,
+                new String[] { Integer.toString(makerCode), Integer.toString(countryCode) });
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
         mAdapter.swapCursor(cursor);
         //TODO: Process case when no data found in the database (cursor is empty)
-        if (cursor.getCount() == 0) {
+        if (cursor.getCount() > 0) {
+            if (isBlacklisted(cursor)) {
+                toast(R.string.blacklisted);
+                getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            } else {
+                toast(R.string.clean);
+                getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            }
+        } else {
             toast(R.string.maker_not_found);
         }
 

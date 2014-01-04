@@ -17,9 +17,11 @@ import java.util.List;
 public class Makers extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "makers";
+    private final Context context;
 
     public Makers(Context context) {
         super(context, name, null, version);
+        this.context = context;
     }
 
     public Cursor getProduct(String barcode) {
@@ -29,7 +31,7 @@ public class Makers extends SQLiteAssetHelper {
         qb.setTables("makers m left outer join blacklist b on m.Maker = b.Maker");
         String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "Title", "Type", "Owner", "Affiliation"};
         Cursor c = qb.query(db, sqlSelect,
-                "_id = " + barcode, null, null, null, null);
+                "Barcode = ?", new String[] {barcode}, null, null, null);
 
         return c;
     }
@@ -42,20 +44,21 @@ public class Makers extends SQLiteAssetHelper {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         qb.setTables("makers m left outer join blacklist b on m.Maker = b.Maker");
-        String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "'" + R.string.n_a + "' as Title",
+        String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "'" + context.getString(R.string.n_a) + "' as Title",
                               "Type", "Owner", "Affiliation"};
         Cursor c = qb.query(db, sqlSelect,
-                "MakerCode = " + makerCode + " and m.Maker <> '' and CountryCode = " + countryCode,
-                null, "m.Maker", "length(Barcode) = 13", "Owner desc");
+                "MakerCode = ? and m.Maker <> '' and CountryCode = ?",
+                new String[] { Integer.toString(makerCode), Integer.toString(countryCode) },
+                "m.Maker", "length(Barcode) = 13", "Owner desc");
 
         return c;
     }
 
     public Cursor getProductOrMakers(String barcode) {
         Cursor c = getProduct(barcode);
-        if (c.getCount() == 0 && barcode.length() == 13)
+        if (c.getCount() == 0 && barcode.length() == 13) {
             c = getMaker(barcode);
-
+        }
         return c;
     }
 }
