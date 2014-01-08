@@ -7,6 +7,8 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
@@ -24,10 +26,18 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
 
     private SimpleCursorAdapter mAdapter;
     private Makers mDb;
+    private OnScanResultsInteractionListener mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        try {
+            mListener = (OnScanResultsInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
         ((MainActivity) activity).onSectionAttached(1);
     }
 
@@ -49,16 +59,22 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
 
         setEmptyText(getString(R.string.press_scan));
 
-        if (savedInstanceState != null && barcode == null) {
-            barcode = savedInstanceState.getString(ARG_BARCODE);
-        }
-
         mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.productrow, null,
                 new String[] {"_id", "Owner", "Maker", "Title"},
                 new int[] { R.id.barcode, R.id.owner, R.id.maker, R.id.title }, 0);
         setListAdapter(mAdapter);
 
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null && barcode == null) {
+            barcode = savedInstanceState.getString(ARG_BARCODE);
+            getLoaderManager().restartLoader(0, null, this);
+        }
     }
 
     private boolean isBlacklisted(Cursor product) {
@@ -86,7 +102,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         String sql = "select Barcode as _id, m.Maker as Maker, '" + getString(R.string.n_a) + "' as Title, " +
                 "NULL as Type, NULL as Owner, NULL as Affiliation \n" +
-                "from makers m where 1 = 2 and Barcode = ? and CountryCode = ? and MakerCode = ?";
+                "from makers m where 1 = 2 and CountryCode = ? and MakerCode = ? and Barcode = ?";
 
         Integer countryCode = 0;
         Integer makerCode = 0;
@@ -109,12 +125,6 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
                     "           m.Title,\n" +
                     "           AltMaker\n" +
                     "      FROM ( \n" +
-                    "            SELECT *\n" +
-                    "              FROM makers\n" +
-                    "             WHERE Barcode = ? \n" +
-                    "        ) \n" +
-                    "        AS m\n" +
-                    "           LEFT JOIN ( \n" +
                     "            SELECT DISTINCT Maker AS AltMaker\n" +
                     "                       FROM makers\n" +
                     "                      WHERE CountryCode = ? \n" +
@@ -123,11 +133,17 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
                     "                            AND\n" +
                     "                            Maker <> '' \n" +
                     "        ) \n" +
-                    "     \n" +
+                    "    \n" +
+                    "           LEFT JOIN ( \n" +
+                    "            SELECT *\n" +
+                    "              FROM makers\n" +
+                    "             WHERE Barcode = ? \n" +
+                    "        ) \n" +
+                    "        AS m \n" +
                     ") \n" +
                     "AS r\n" +
                     "       LEFT JOIN blacklist b\n" +
-                    "               ON b.Maker = r.AltMaker\n" +
+                    "              ON b.Maker = r.AltMaker\n" +
                     " ORDER BY b.Owner DESC\n" +
                     " LIMIT 1;\n";
 
@@ -142,7 +158,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
         }
 
         return new SQLiteCursorLoader(this.getActivity(), mDb, sql,
-                new String[] {barcode==null?"":barcode, Integer.toString(countryCode), Integer.toString(makerCode) });
+                new String[] {Integer.toString(countryCode), Integer.toString(makerCode), barcode==null?"":barcode });
     }
 
     @Override
@@ -151,10 +167,10 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
         //TODO: Process case when no data found in the database (cursor is empty)
         if (cursor.getCount() > 0) {
             if (isBlacklisted(cursor)) {
-                toast(R.string.blacklisted);
+//                toast(R.string.blacklisted);
                 getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
             } else {
-                toast(R.string.clean);
+//                toast(R.string.clean);
                 getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
             }
         } else {
@@ -172,5 +188,35 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        if (null != mListener) {
+            // Notify the active callbacks interface (the activity, if the
+            // fragment is attached to one) that an item has been selected.
+            mListener.onFragmentInteraction(""+id);
+        }
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnScanResultsInteractionListener {
+        public void onFragmentInteraction(String id);
     }
 }

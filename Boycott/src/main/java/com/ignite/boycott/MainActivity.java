@@ -20,19 +20,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, ScanResultsFragment.OnScanResultsInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private ScanResultsFragment mScanResultsFragment;
 
     /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    private Map<String, Class<? extends Fragment>> drawerFragmentMap;
+    private Map<String, Class<? extends Fragment>> drawerFragmentClassMap;
+    private Map<String, Fragment> drawerFragmentMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,6 @@ public class MainActivity extends ActionBarActivity
 
         mTitle = getTitle();
 
-
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -55,11 +54,10 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void createNavigationDrawerFragments() {
-        drawerFragmentMap = new HashMap<>();
-        String className = MainActivity.class.getName();
-        drawerFragmentMap.put(fragmentTag(0), ScanResultsFragment.class);
-        drawerFragmentMap.put(fragmentTag(1), CatalogFragment.class);
-        drawerFragmentMap.put(fragmentTag(2), HistoryFragment.class);
+        drawerFragmentClassMap = new HashMap<>();
+        drawerFragmentClassMap.put(fragmentTag(0), ScanResultsFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(1), CatalogFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(2), HistoryFragment.class);
     }
 
     @Override
@@ -68,12 +66,21 @@ public class MainActivity extends ActionBarActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         String fragmentTag = fragmentTag(position);
 
+
         Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
         if (fragment == null) {
-            fragment = newInstance(drawerFragmentMap.get(fragmentTag));
+                fragment = drawerFragmentMap.get(fragmentTag);
+        } else {
+            if (!drawerFragmentMap.containsKey(fragmentTag)) {
+                drawerFragmentMap.put(fragmentTag, fragment);
+            }
         }
         if (fragment == null) {
-            throw new RuntimeException("Fragment " + fragmentTag + " is not yet created or not found!");
+            fragment = newInstance(drawerFragmentClassMap.get(fragmentTag));
+            drawerFragmentMap.put(fragmentTag, fragment);
+        }
+        if (fragment == null) {
+            throw new RuntimeException("Fragment " + fragmentTag + " could not be created nor found!");
         }
 
         fragmentManager.beginTransaction()
@@ -88,9 +95,7 @@ public class MainActivity extends ActionBarActivity
     private<T> T newInstance(Class<? extends T> aClass) {
         try {
             return aClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -145,9 +150,17 @@ public class MainActivity extends ActionBarActivity
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String code = scanResult.getContents();
-            mScanResultsFragment.onScanResult(code);
+            ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
+            if (mScanResultsFragment != null) {
+                mScanResultsFragment.onScanResult(code);
+            }
         } else {
             Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onFragmentInteraction(String id) {
+        Toast.makeText(this, "Tap", Toast.LENGTH_SHORT).show();
     }
 }

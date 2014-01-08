@@ -33,7 +33,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         getLoaderManager().initLoader(0, null, this);
 
         mAdapter = new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_2, null,
-                new String[] {"_id", "Brand", "Owner"}, new int[] {  } , 0);
+                new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
 
         setListAdapter(mAdapter);
     }
@@ -46,7 +46,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String sql = "select Maker, Owner from blacklist";
+        String sql = "select _id, Maker, Owner from blacklist";
 
         return new SQLiteCursorLoader(this.getActivity(), mDb, sql, null);
     }
@@ -60,6 +60,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         } else {
             setListShownNoAnimation(true);
         }
+        getListView().smoothScrollToPosition(firstViewablePosition);
     }
 
     @Override

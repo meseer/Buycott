@@ -7,7 +7,6 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:0.7.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
-
     }
 }
 apply plugin: 'android'
@@ -21,6 +20,24 @@ repositories {
 android {
     compileSdkVersion 19
     buildToolsVersion "19.0.0"
+
+    signingConfigs {
+        release {
+            storeFile file("keystore/boycott.jks")
+            storePassword System.console().readLine("\n\$ Enter keystore password: ")
+            keyAlias "boycott"
+            keyPassword System.console().readLine("\n\$ Enter key password: ")
+        }
+    }
+
+    buildTypes {
+        release {
+            runProguard true
+            debuggable false
+            proguardFile getDefaultProguardFile('proguard-android-optimize.txt')
+            signingConfig signingConfigs.release
+        }
+    }
 
     defaultConfig {
         minSdkVersion 10
@@ -44,6 +61,7 @@ dependencies {
             'com.google.zxing:core:+',
             'com.google.zxing:android-integration:+',
             'com.google.zxing:javase:+',
+            'com.crashlytics.android:crashlytics:1.+',
             files('libs/android-sqlite-asset-helper.jar',
                   'libs/CWAC-LoaderEx.jar')
     )
@@ -65,6 +83,5 @@ dependencies {
 //            url = 'https://github.com/commonsguy/cwac-loaderex/releases/download/v0.7.3/CWAC-LoaderEx.jar'
 //        }
 //    }
-    compile 'com.crashlytics.android:crashlytics:1.+'
 
 }
