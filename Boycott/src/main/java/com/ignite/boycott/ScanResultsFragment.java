@@ -1,17 +1,15 @@
 package com.ignite.boycott;
 
 import android.app.Activity;
-import android.app.ListFragment;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.SimpleCursorAdapter;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
-import com.commonsware.cwac.loaderex.SQLiteCursorLoader;
+import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.ignite.buycott.R;
 
 /**

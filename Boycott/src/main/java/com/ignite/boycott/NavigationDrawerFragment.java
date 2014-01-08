@@ -1,15 +1,16 @@
 package com.ignite.boycott;
 
-import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -95,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
+                getSupportActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
@@ -125,7 +126,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
@@ -145,7 +146,7 @@ public class NavigationDrawerFragment extends Fragment {
                     return;
                 }
 
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
             @Override
@@ -164,7 +165,7 @@ public class NavigationDrawerFragment extends Fragment {
                     sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
-                getActivity().invalidateOptionsMenu(); // calls onPrepareOptionsMenu()
+                getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
         };
 
@@ -183,6 +184,10 @@ public class NavigationDrawerFragment extends Fragment {
         });
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    private ActionBar getSupportActionBar() {
+        return ((ActionBarActivity)getActivity()).getSupportActionBar();
     }
 
     private void selectItem(int position) {
@@ -263,14 +268,10 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setTitle(R.string.app_name);
-    }
-
-    private ActionBar getActionBar() {
-        return getActivity().getActionBar();
     }
 
     /**

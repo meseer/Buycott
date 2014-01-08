@@ -34,7 +34,7 @@ android {
 
 dependencies {
 	compile(
-            'com.android.support:support-v4:+',
+            'com.android.support:appcompat-v7:18.0.+',
             'com.google.zxing:core:+',
             'com.google.zxing:android-integration:+',
             'com.google.zxing:javase:+',
