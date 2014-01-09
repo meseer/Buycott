@@ -1,5 +1,6 @@
 package com.ignite.boycott;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -17,6 +18,20 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     private final static String POSITION_TAG = "Catalog Position";
     private SimpleCursorAdapter mAdapter;
     private Makers mDb;
+    private ScanResultsFragment.OnScanResultsInteractionListener mListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (ScanResultsFragment.OnScanResultsInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+        ((MainActivity) activity).onSectionAttached(2);
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
