@@ -17,5 +17,5 @@
     <string name="blacklisted">Blacklisted</string>
     <string name="n_a">Unknown product</string>
     <string name="press_scan">Press \'<b>Scan</b>\' to scan barcode</string>
-
+    <string name="history_hint">Your scan history will appear here</string>
 </resources>
