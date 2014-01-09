@@ -66,7 +66,6 @@ public class MainActivity extends ActionBarActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         String fragmentTag = fragmentTag(position);
 
-
         Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
         if (fragment == null) {
                 fragment = drawerFragmentMap.get(fragmentTag);
@@ -149,11 +148,15 @@ public class MainActivity extends ActionBarActivity
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
-            onNavigationDrawerItemSelected(0); //select scan bar
             String code = scanResult.getContents();
-            ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
-            if (mScanResultsFragment != null) {
-                mScanResultsFragment.onScanResult(code);
+            if (code != null && code.length() == 13) {
+                onNavigationDrawerItemSelected(0); //select scan bar
+                ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
+                if (mScanResultsFragment != null) {
+                    mScanResultsFragment.onScanResult(code);
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.code_too_short), Toast.LENGTH_LONG).show();
             }
         } else {
             Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();

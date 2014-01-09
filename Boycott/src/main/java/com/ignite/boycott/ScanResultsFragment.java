@@ -107,7 +107,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
         Integer countryCode = 0;
         Integer makerCode = 0;
 
-        if (barcode != null) {
+        if (barcode != null && barcode.length() == 13) {
             countryCode = Integer.valueOf(barcode.substring(0,3));
             makerCode = Integer.valueOf(barcode.substring(3, 8));
 

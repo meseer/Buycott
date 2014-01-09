@@ -18,4 +18,5 @@
     <string name="n_a">Unknown product</string>
     <string name="press_scan">Press \'<b>Scan</b>\' to scan barcode</string>
     <string name="history_hint">Your scan history will appear here</string>
+    <string name="code_too_short">Scanned code is too short to be product code</string>
 </resources>
