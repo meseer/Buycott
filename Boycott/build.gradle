@@ -25,7 +25,7 @@ android {
         release {
             storeFile file("keystore/boycott.jks")
             storePassword System.console().readLine("\n\$ Enter keystore password: ")
-            keyAlias "boycott"
+            keyAlias "boykott"
             keyPassword System.console().readLine("\n\$ Enter key password: ")
         }
     }
