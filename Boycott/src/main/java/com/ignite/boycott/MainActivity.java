@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
 
-        createNavigationDrawerFragments();
+        setUpNavigationDrawerElements();
 
         setContentView(R.layout.activity_main);
 
@@ -53,7 +53,7 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-    private void createNavigationDrawerFragments() {
+    private void setUpNavigationDrawerElements() {
         drawerFragmentClassMap = new HashMap<>();
         drawerFragmentClassMap.put(fragmentTag(0), ScanResultsFragment.class);
         drawerFragmentClassMap.put(fragmentTag(1), CatalogFragment.class);
@@ -149,6 +149,7 @@ public class MainActivity extends ActionBarActivity
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
+            onNavigationDrawerItemSelected(0); //select scan bar
             String code = scanResult.getContents();
             ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
             if (mScanResultsFragment != null) {
