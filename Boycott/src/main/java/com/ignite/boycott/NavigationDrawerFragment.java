@@ -24,6 +24,8 @@ import android.widget.ListView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.ignite.buycott.R;
 
+import java.util.Arrays;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -260,7 +262,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     public void onScan() {
         IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.initiateScan();
+        integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
     }
 
     /**
