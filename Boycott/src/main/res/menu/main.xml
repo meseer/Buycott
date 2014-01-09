@@ -1,9 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:boycott="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity" >
     <item android:id="@+id/action_scan"
         android:title="@string/action_scan"
-        android:showAsAction="withText|ifRoom" />
+        boycott:showAsAction="withText|always" />
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:orderInCategory="100"
