@@ -95,7 +95,9 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
 
     public void onScanResult(String code) {
         this.barcode = code;
-        getLoaderManager().restartLoader(0, null, this);
+        if (isAdded()) {
+            getLoaderManager().restartLoader(0, null, this);
+        }
     }
 
     @Override

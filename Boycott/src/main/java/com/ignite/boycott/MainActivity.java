@@ -84,7 +84,7 @@ public class MainActivity extends ActionBarActivity
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment, fragmentTag)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private String fragmentTag(int position) {
@@ -147,19 +147,28 @@ public class MainActivity extends ActionBarActivity
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult != null) {
-            String code = scanResult.getContents();
-            if (code != null && code.length() == 13) {
-                onNavigationDrawerItemSelected(0); //select scan bar
-                ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
-                if (mScanResultsFragment != null) {
-                    mScanResultsFragment.onScanResult(code);
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.code_too_short), Toast.LENGTH_LONG).show();
-            }
-        } else {
+        if (scanResult == null) {
             Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String code = scanResult.getContents();
+        if (code == null) {
+            Toast.makeText(this, getString(R.string.scan_cancelled), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (code.length() != 13) {
+            Toast.makeText(this, getString(R.string.code_too_short), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (mNavigationDrawerFragment.getSelectedItem() != 0) {
+            mNavigationDrawerFragment.selectItem(0);
+        }
+        ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
+        if (mScanResultsFragment != null) {
+            mScanResultsFragment.onScanResult(code);
         }
     }
 
