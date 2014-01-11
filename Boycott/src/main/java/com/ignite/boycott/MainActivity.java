@@ -8,6 +8,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -40,7 +41,6 @@ public class MainActivity extends ActionBarActivity
         Crashlytics.start(this);
 
         setUpNavigationDrawerElements();
-
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
@@ -51,6 +51,7 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
     }
 
     private void setUpNavigationDrawerElements() {
