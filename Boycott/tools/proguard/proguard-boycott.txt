@@ -1,2 +1,3 @@
 -dontwarn com.commonsware.cwac.loaderex.*
 -dontwarn com.commonsware.cwac.loaderex.acl.*
+-keepattributes SourceFile,LineNumberTable
