@@ -21,8 +21,8 @@ android {
     buildToolsVersion '19.0.0'
 
     defaultConfig {
-        versionCode 8
-        versionName "1.0-b8"
+        versionCode 9
+        versionName "1.0-b9"
         minSdkVersion 10
         targetSdkVersion 19
     }
@@ -64,17 +64,9 @@ dependencies {
     compile 'com.google.zxing:core:+'
     compile 'com.google.zxing:android-integration:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
-    compile files('libs/android-sqlite-asset-helper.jar')
+    compile project(':android-sqlite-asset-helper')
     compile files('libs/CWAC-LoaderEx.jar')
     //TODO: Investigate how to make this work, see http://x.co/3XxAL
-    //    compile module('jgilfelt:android-sqlite-asset-helper:latest') {
-    //        artifact {
-    //            name = 'android-sqlite-asset-helper'
-    //            extension = 'jar'
-    //            type = 'jar'
-    //            url = 'https://github.com/jgilfelt/android-sqlite-asset-helper/blob/master/lib/android-sqlite-asset-helper.jar?raw=true'
-    //        }
-    //    }
     //    compile module('commonsguy:cwac-loaderex:0.7.3') {
     //        artifact {
     //            name = 'cwac-loaderex'
