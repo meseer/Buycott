@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -21,7 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks, ScanResultsFragment.OnScanResultsInteractionListener {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        ScanResultsFragment.OnScanResultsInteractionListener,
+        CatalogFragment.CatalogInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -34,6 +35,7 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private Map<String, Class<? extends Fragment>> drawerFragmentClassMap;
     private Map<String, Fragment> drawerFragmentMap = new HashMap<>();
+    private Makers mDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
+        mDb = Makers.instance(this);
 
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -176,5 +179,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFragmentInteraction(String id) {
         Toast.makeText(this, "Tap", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMakerSelected(long blacklistId) {
+        BlacklistedMaker maker = mDb.getBlacklistedMaker(blacklistId);
+        Toast.makeText(this, maker.toString(), Toast.LENGTH_LONG).show();
     }
 }

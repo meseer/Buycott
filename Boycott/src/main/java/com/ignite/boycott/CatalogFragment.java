@@ -7,6 +7,8 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.View;
+import android.widget.ListView;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
@@ -14,17 +16,15 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
  * Created by mdelegan on 08.01.14.
  */
 public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private int firstViewablePosition;
-    private final static String POSITION_TAG = "Catalog Position";
     private SimpleCursorAdapter mAdapter;
     private Makers mDb;
-    private ScanResultsFragment.OnScanResultsInteractionListener mListener;
+    private CatalogInteractionListener mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (ScanResultsFragment.OnScanResultsInteractionListener) activity;
+            mListener = (CatalogInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -37,13 +37,9 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDb = new Makers(this.getActivity());
+        mDb = Makers.instance(this.getActivity());
 
         this.setRetainInstance(true);
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(POSITION_TAG)) {
-            this.firstViewablePosition = savedInstanceState.getInt(POSITION_TAG);
-        }
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -51,12 +47,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
                 new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
 
         setListAdapter(mAdapter);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt(POSITION_TAG, getListView().getFirstVisiblePosition());
+        setListShown(false);
     }
 
     @Override
@@ -75,11 +66,20 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         } else {
             setListShownNoAnimation(true);
         }
-        getListView().smoothScrollToPosition(firstViewablePosition);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> objectLoader) {
         mAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        mListener.onMakerSelected(id);
+    }
+
+    public interface CatalogInteractionListener {
+        public void onMakerSelected(long blacklistId);
     }
 }

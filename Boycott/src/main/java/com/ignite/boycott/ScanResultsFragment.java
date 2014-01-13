@@ -53,7 +53,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDb = new Makers(this.getActivity());
+        mDb = Makers.instance(this.getActivity());
 
         setRetainInstance(true);
 
@@ -169,10 +169,8 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
         //TODO: Process case when no data found in the database (cursor is empty)
         if (cursor.getCount() > 0) {
             if (isBlacklisted(cursor)) {
-//                toast(R.string.blacklisted);
                 getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
             } else {
-//                toast(R.string.clean);
                 getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
             }
         } else {

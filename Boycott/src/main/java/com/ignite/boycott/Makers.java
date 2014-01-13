@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.text.TextUtils;
 
 import com.ignite.buycott.R;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -17,9 +16,11 @@ import java.util.List;
 public class Makers extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "makers";
+    private static Makers instance;
     private final Context context;
 
-    public Makers(Context context) {
+    //TODO: Test database roll-out when not enough space on device
+    private Makers(Context context) {
         super(context, name, null, version);
         this.context = context;
     }
@@ -60,5 +61,30 @@ public class Makers extends SQLiteAssetHelper {
             c = getMaker(barcode);
         }
         return c;
+    }
+
+    public static Makers instance(Context context) {
+        if (instance == null) {
+            synchronized (Makers.class) {
+                if (instance == null) {
+                    instance = new Makers(context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    public BlacklistedMaker getBlacklistedMaker(long blacklistId) {
+        SQLiteDatabase db = getReadableDatabase();
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+
+        qb.setTables("blacklist");
+        String[] sqlSelect = {"Maker", "Type", "Owner", "Affiliation", "Alternative"};
+        Cursor c = qb.query(db, sqlSelect,
+                "_id = ?",
+                new String[] { Long.toString(blacklistId) }, null, null, null);
+
+        return BlacklistedMaker.fromCursor(c);
+
     }
 }
