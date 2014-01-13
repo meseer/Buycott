@@ -24,8 +24,6 @@ import android.widget.ListView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.ignite.buycott.R;
 
-import java.util.Arrays;
-
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
@@ -102,8 +100,8 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getSupportActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_1,
                 android.R.id.text1,
                 new String[]{
                         getString(R.string.title_section1),
@@ -132,7 +130,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         // set up the drawer's list view with items and click listener
 
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
@@ -192,7 +190,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    private ActionBar getSupportActionBar() {
+    private ActionBar getActionBar() {
         return ((ActionBarActivity)getActivity()).getSupportActionBar();
     }
 
@@ -274,7 +272,7 @@ public class NavigationDrawerFragment extends Fragment {
      * 'context', rather than just what's in the current screen.
      */
     private void showGlobalContextActionBar() {
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setTitle(R.string.app_name);
