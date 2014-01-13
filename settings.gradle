@@ -1,1 +1,1 @@
-include ':Boycott', ':CrawlerZakazUA', ':android-sqlite-asset-helper'
+include ':Boycott', ':CrawlerZakazUA', ':android-sqlite-asset-helper', ':zxing-android-integration'

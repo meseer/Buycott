@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.google.zxing"
+    android:versionCode="3"
+    android:versionName="3.0.0-SNAPSHOT" >
+
+    <uses-sdk android:minSdkVersion="7" />
+
+    <application
+        android:label="core" >
+    </application>
+
+</manifest>

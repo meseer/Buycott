@@ -61,10 +61,9 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:18.0.+'
-    compile 'com.google.zxing:core:+'
-    compile 'com.google.zxing:android-integration:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile project(':android-sqlite-asset-helper')
+    compile project(':zxing-android-integration')
     compile files('libs/CWAC-LoaderEx.jar')
     //TODO: Investigate how to make this work, see http://x.co/3XxAL
     //    compile module('commonsguy:cwac-loaderex:0.7.3') {
