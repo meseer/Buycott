@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 buildscript {
     repositories {
         mavenCentral()
@@ -16,13 +18,38 @@ repositories {
     maven { url 'http://download.crashlytics.com/maven' }
 }
 
+task('increaseVersionCode') << {
+    def manifestFile = file("src/main/AndroidManifest.xml")
+    def pattern = Pattern.compile("versionCode=\"(\\d+)\"")
+    def manifestText = manifestFile.getText()
+    def matcher = pattern.matcher(manifestText)
+    matcher.find()
+    def versionCode = Integer.parseInt(matcher.group(1)) + 1
+    def manifestContent = matcher.replaceAll("versionCode=\"" + versionCode + "\"")
+
+    def patternVersionNumber = Pattern.compile("versionName=\"(\\d+).(\\d+).(\\d+)\\S*\"")
+    def matcherVersionNumber = patternVersionNumber.matcher(manifestContent)
+    matcherVersionNumber.find()
+    def majorVersion = Integer.parseInt(matcherVersionNumber.group(1))
+    def minorVersion = Integer.parseInt(matcherVersionNumber.group(2))
+    def buildStatus = android.defaultConfig.ext.buildStatus
+    manifestContent = matcherVersionNumber.replaceAll("versionName=\"$majorVersion.$minorVersion." + versionCode + "-$buildStatus\"")
+
+    manifestFile.write(manifestContent)
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'generateReleaseBuildConfig') {
+        task.dependsOn 'increaseVersionCode'
+    }
+}
+
 android {
     compileSdkVersion 19
     buildToolsVersion '19.0.0'
 
     defaultConfig {
-        versionCode 10
-        versionName "1.0-b10"
+        ext.buildStatus = "alpha" //todo: have different targets for alpha, beta, stable
         minSdkVersion 10
         targetSdkVersion 19
     }

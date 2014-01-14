@@ -59,13 +59,13 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
-
         if (isResumed()) {
             setListShown(true);
         } else {
             setListShownNoAnimation(true);
         }
+
+        mAdapter.swapCursor(cursor);
     }
 
     @Override
