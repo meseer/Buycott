@@ -21,5 +21,9 @@
     <string name="code_too_short">Scanned code is too short\n(expected 13 chars)</string>
     <string name="scan_cancelled">You have cancelled the scan</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ownerLabel">Owner</string>
+    <string name="typeLabel">Type</string>
+    <string name="affiliationLabel">Affiliation</string>
+    <string name="alternativeLabel">Alternative(s)</string>
 
 </resources>

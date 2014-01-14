@@ -1,6 +1,7 @@
 package com.ignite.boycott;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,18 +12,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ignite.buycott.R;
 
+import java.lang.InstantiationException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ScanResultsFragment.OnScanResultsInteractionListener,
-        CatalogFragment.CatalogInteractionListener {
+        CatalogFragment.CatalogInteractionListener,
+        MakerDetailsFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -40,7 +42,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+//        Crashlytics.start(this);
 
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
@@ -54,7 +56,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
     }
 
     private void setUpNavigationDrawerElements() {
@@ -182,8 +183,20 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    public void makerNotFound(String barcode) {
+        Toast.makeText(this, "Maker not found", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onMakerSelected(long blacklistId) {
         BlacklistedMaker maker = mDb.getBlacklistedMaker(blacklistId);
-        Toast.makeText(this, maker.toString(), Toast.LENGTH_LONG).show();
+        MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
+        getSupportFragmentManager().beginTransaction().addToBackStack(null)
+                .replace(R.id.container, fragment, "makerDetails").commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

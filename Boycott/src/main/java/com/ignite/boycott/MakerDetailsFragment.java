@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.ignite.buycott.R;
 
@@ -21,14 +23,13 @@ import com.ignite.buycott.R;
  *
  */
 public class MakerDetailsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String MAKER_NAME = "MakerName";
+    private static final String OWNER_NAME = "OwnerName";
+    private static final String TYPE_NAME = "TypeName";
+    private static final String AFFILIATION_NAME = "AffiliationName";
+    private static final String ALTERNATIVE_NAME = "AlternativeName";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private BlacklistedMaker maker;
 
     private OnFragmentInteractionListener mListener;
 
@@ -36,16 +37,18 @@ public class MakerDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param maker Blacklisted maker
      * @return A new instance of fragment MakerDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MakerDetailsFragment newInstance(String param1, String param2) {
+    public static MakerDetailsFragment newInstance(BlacklistedMaker maker) {
         MakerDetailsFragment fragment = new MakerDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(MAKER_NAME, maker.maker);
+        args.putString(OWNER_NAME, maker.owner);
+        args.putString(TYPE_NAME, maker.type);
+        args.putString(AFFILIATION_NAME, maker.affiliation);
+        args.putString(ALTERNATIVE_NAME, maker.alternative);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,8 +60,13 @@ public class MakerDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            maker = new BlacklistedMaker(
+                    getArguments().getString(MAKER_NAME),
+                    getArguments().getString(OWNER_NAME),
+                    getArguments().getString(TYPE_NAME),
+                    getArguments().getString(AFFILIATION_NAME),
+                    getArguments().getString(ALTERNATIVE_NAME)
+            );
         }
     }
 
@@ -66,7 +74,18 @@ public class MakerDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maker_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_maker_details, container, false);
+        ((TextView) view.findViewById(R.id.makerName)).setText(maker.maker);
+        ((TextView) view.findViewById(R.id.ownerName)).setText(maker.owner);
+        ((TextView) view.findViewById(R.id.typeName)).setText(maker.type);
+        ((TextView) view.findViewById(R.id.affiliationName)).setText(maker.affiliation);
+        if (TextUtils.isEmpty(maker.alternative)) {
+            //hide label or whole row
+//            ((TextView)view.findViewById(R.id.alternativeLabel)).setTex
+        } else {
+            ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.alternative);
+        }
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -174,8 +174,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
                 getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
             }
         } else {
-            if (barcode != null)
-                toast(R.string.maker_not_found);
+            if (barcode != null) mListener.makerNotFound(barcode);
         }
 
         if (isResumed()) {
@@ -218,5 +217,7 @@ public class ScanResultsFragment extends ListFragment implements LoaderManager.L
      */
     public interface OnScanResultsInteractionListener {
         public void onFragmentInteraction(String id);
+
+        void makerNotFound(String barcode);
     }
 }
