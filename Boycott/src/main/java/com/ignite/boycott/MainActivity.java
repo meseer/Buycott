@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ignite.buycott.R;
@@ -24,7 +25,8 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ScanResultsFragment.OnScanResultsInteractionListener,
         CatalogFragment.CatalogInteractionListener,
-        MakerDetailsFragment.OnFragmentInteractionListener {
+        MakerDetailsFragment.OnFragmentInteractionListener,
+        MakerNotFoundFragment.OnFragmentInteractionListener {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -184,7 +186,10 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void makerNotFound(String barcode) {
-        Toast.makeText(this, "Maker not found", Toast.LENGTH_SHORT).show();
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.container, MakerNotFoundFragment.newInstance(barcode))
+                .commit();
     }
 
     @Override
@@ -198,5 +203,26 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+    @Override
+    public void reportMakerNotFound(String barcode) {
+        Crashlytics.logException(new MakerNotFoundException(barcode));
+        Fragment f = getSupportFragmentManager().findFragmentByTag("makerDetails");
+        if (f != null)
+            getSupportFragmentManager().beginTransaction().remove(f).commit();
+    }
+
+    private class MakerNotFoundException extends RuntimeException {
+        private final String barcode;
+
+        public MakerNotFoundException(String barcode) {
+            this.barcode = barcode;
+        }
+
+        @Override
+        public String getMessage() {
+            return "Maker not found for barcode " + barcode;
+        }
     }
 }

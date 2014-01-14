@@ -25,5 +25,7 @@
     <string name="typeLabel">Type</string>
     <string name="affiliationLabel">Affiliation</string>
     <string name="alternativeLabel">Alternative(s)</string>
+    <string name="Barcode">Barcode</string>
+    <string name="maker_notify">Notify</string>
 
 </resources>
