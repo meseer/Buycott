@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.ignite.buycott.R;
 
@@ -29,6 +30,9 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
     private OnFragmentInteractionListener mListener;
     private String barcode;
     private Button mNotifyButton;
+    private EditText mBarcodeEditBox;
+    private EditText mMakerEditBox;
+    private EditText mProductEditBox;
 
     /**
      * Use this factory method to create a new instance of
@@ -65,12 +69,21 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
         View view = inflater.inflate(R.layout.fragment_maker_not_found, container, false);
         mNotifyButton = (Button)view.findViewById(R.id.maker_notify);
         mNotifyButton.setOnClickListener(this);
+
+        mBarcodeEditBox = (EditText)view.findViewById(R.id.not_found_barcode);
+        mBarcodeEditBox.setText(barcode);
+
+        mMakerEditBox = (EditText)view.findViewById(R.id.not_found_maker);
+        mProductEditBox = (EditText)view.findViewById(R.id.not_found_product);
+
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        mListener.reportMakerNotFound(barcode);
+        mListener.reportMakerNotFound(barcode,
+                mMakerEditBox.getText().toString(),
+                mProductEditBox.getText().toString());
     }
 
     @Override
@@ -101,6 +114,6 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void reportMakerNotFound(String barcode);
+        void reportMakerNotFound(String barcode, String maker, String productName);
     }
 }

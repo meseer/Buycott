@@ -27,5 +27,11 @@
     <string name="alternativeLabel">Alternative(s)</string>
     <string name="Barcode">Barcode</string>
     <string name="maker_notify">Notify</string>
+    <string name="thank_you">Thank you!</string>
+    <string name="maker">Maker</string>
+    <string name="maker_optional">Maker (optional)</string>
+    <string name="not_found_product_label">Product name</string>
+    <string name="product_name_hint">Product Name</string>
+    <string name="maker_hint">Maker</string>
 
 </resources>

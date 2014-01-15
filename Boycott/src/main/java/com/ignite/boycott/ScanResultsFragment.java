@@ -14,8 +14,10 @@ import com.ignite.buycott.R;
  * Created by meseer on 01.01.14.
  */
 public class ScanResultsFragment extends ListFragment {
+    private static final String ARG_BARCODE = "BARCODE";
     private SimpleCursorAdapter mAdapter;
     private OnScanResultsInteractionListener mListener;
+    private String barcode;
 
     public static ScanResultsFragment newInstance() {
         ScanResultsFragment fragment = new ScanResultsFragment();
@@ -39,13 +41,13 @@ public class ScanResultsFragment extends ListFragment {
         ((MainActivity) activity).onSectionAttached(1);
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        if (barcode != null) {
-//            outState.putString(ARG_BARCODE, barcode);
-//        }
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (barcode != null) {
+            outState.putString(ARG_BARCODE, barcode);
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -66,7 +68,6 @@ public class ScanResultsFragment extends ListFragment {
 //
 //        if (savedInstanceState != null && barcode == null) {
 //            barcode = savedInstanceState.getString(ARG_BARCODE);
-//            getLoaderManager().restartLoader(0, null, this);
 //        }
 //    }
 

@@ -8,29 +8,95 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="left|top">
+        android:layout_gravity="left|top"
+        android:layout_margin="5dp">
 
         <LinearLayout
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="@string/Barcode"
-                android:id="@+id/Barcode"
-                android:layout_gravity="center_vertical" />
+                android:dividerPadding="10dp">
 
-            <EditText
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/Barcode"
+                    android:id="@+id/not_found_barcode_label"
+                    android:layout_gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:id="@+id/not_found_barcode"
+                    android:layout_gravity="right"
+                    android:editable="false"
+                    android:enabled="false"
+                    android:focusable="false"
+                    android:numeric="integer"
+                    android:gravity="right"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
-                android:ems="10"
-                android:id="@+id/editText"
-                android:layout_gravity="right"
-                android:editable="false" />
+                android:dividerPadding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/maker"
+                    android:id="@+id/not_found_maker_label"
+                    android:layout_gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/not_found_maker"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:hint="@string/maker_hint"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:dividerPadding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/not_found_product_label"
+                    android:id="@+id/not_found_product_label"
+                    android:layout_gravity="center_vertical" />
+
+                <EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/not_found_product"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:hint="@string/product_name_hint"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -50,4 +116,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </FrameLayout>

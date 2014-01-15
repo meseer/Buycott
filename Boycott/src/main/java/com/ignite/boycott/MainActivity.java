@@ -45,7 +45,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Crashlytics.start(this);
+        Crashlytics.start(this);
 
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity
 
         fragmentManager.beginTransaction()
                 .replace(R.id.container, fragment, fragmentTag)
-                .commitAllowingStateLoss();
+                .commit();
     }
 
     private String fragmentTag(int position) {
@@ -177,8 +177,15 @@ public class MainActivity extends ActionBarActivity
         Cursor cursor = mDb.getProduct(code);
         if (cursor.getCount() > 0) {
             ScanResultsFragment f = (ScanResultsFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag(0));
-            if (f != null)
+            if (f != null) {
                 f.onScanResult(cursor);
+                if (f.isHidden()) {
+                    getSupportFragmentManager().beginTransaction()
+                            .show(f)
+                            .addToBackStack(null)
+                            .commitAllowingStateLoss();
+                }
+            }
             if (isBlacklisted(cursor)) {
                 //TODO: Show blacklisted view
                 //getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
@@ -211,7 +218,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void makerNotFound(String barcode) {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, MakerNotFoundFragment.newInstance(barcode))
+                .replace(R.id.container, MakerNotFoundFragment.newInstance(barcode))
                 .addToBackStack(null)
                 .commitAllowingStateLoss();
     }
@@ -220,8 +227,10 @@ public class MainActivity extends ActionBarActivity
     public void onMakerSelected(long blacklistId) {
         BlacklistedMaker maker = mDb.getBlacklistedMaker(blacklistId);
         MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
-        getSupportFragmentManager().beginTransaction().addToBackStack(null)
-                .replace(R.id.container, fragment, "makerDetails").commit();
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.container, fragment, "makerDetails")
+                .commit();
     }
 
     @Override
@@ -230,23 +239,10 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void reportMakerNotFound(String barcode) {
-        Crashlytics.logException(new MakerNotFoundException(barcode));
-        Fragment f = getSupportFragmentManager().findFragmentByTag("makerDetails");
-        if (f != null)
-            getSupportFragmentManager().beginTransaction().remove(f).commit();
+    public void reportMakerNotFound(String barcode, String maker, String product) {
+        Crashlytics.logException(new MakerNotFoundException(barcode, maker, product));
+        getSupportFragmentManager().popBackStack();
+        Toast.makeText(this, R.string.thank_you, Toast.LENGTH_SHORT).show();
     }
 
-    private class MakerNotFoundException extends RuntimeException {
-        private final String barcode;
-
-        public MakerNotFoundException(String barcode) {
-            this.barcode = barcode;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Maker not found for barcode " + barcode;
-        }
-    }
 }
