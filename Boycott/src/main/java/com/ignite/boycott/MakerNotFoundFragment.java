@@ -45,6 +45,7 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
         fragment.setArguments(args);
         return fragment;
     }
+
     public MakerNotFoundFragment() {
         // Required empty public constructor
     }
@@ -55,16 +56,16 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
         if (getArguments() != null) {
             barcode = getArguments().getString(BARCODE);
         }
-
-        mNotifyButton = (Button)getView().findViewById(R.id.maker_notify);
-        mNotifyButton.setOnClickListener(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_maker_not_found, container, false);
+        View view = inflater.inflate(R.layout.fragment_maker_not_found, container, false);
+        mNotifyButton = (Button)view.findViewById(R.id.maker_notify);
+        mNotifyButton.setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -102,5 +103,4 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
     public interface OnFragmentInteractionListener {
         void reportMakerNotFound(String barcode);
     }
-
 }

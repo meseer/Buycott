@@ -1,6 +1,7 @@
 package com.ignite.boycott;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -74,6 +75,7 @@ public class MainActivity extends ActionBarActivity
         String fragmentTag = fragmentTag(position);
 
         Fragment fragment = fragmentManager.findFragmentByTag(fragmentTag);
+
         if (fragment == null) {
                 fragment = drawerFragmentMap.get(fragmentTag);
         } else {
@@ -153,6 +155,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult == null) {
             Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
@@ -170,13 +174,33 @@ public class MainActivity extends ActionBarActivity
             return;
         }
 
-        if (mNavigationDrawerFragment.getSelectedItem() != 0) {
-            mNavigationDrawerFragment.selectItem(0);
+        Cursor cursor = mDb.getProduct(code);
+        if (cursor.getCount() > 0) {
+            ScanResultsFragment f = (ScanResultsFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag(0));
+            if (f != null)
+                f.onScanResult(cursor);
+            if (isBlacklisted(cursor)) {
+                //TODO: Show blacklisted view
+                //getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            } else {
+                //TODO: Show whitelisted view
+                //getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            }
+        } else {
+            makerNotFound(code);
         }
-        ScanResultsFragment mScanResultsFragment = (ScanResultsFragment) drawerFragmentMap.get(fragmentTag(0));
-        if (mScanResultsFragment != null) {
-            mScanResultsFragment.onScanResult(code);
-        }
+    }
+
+    private boolean isBlacklisted(Cursor product) {
+        if (product.getCount() == 0) return false;
+
+        int makerIndex = product.getColumnIndexOrThrow("Owner");
+        product.moveToFirst();
+        do {
+            if (product.getString(makerIndex) != null) return true;
+        } while (product.moveToNext());
+
+        return false;
     }
 
     @Override
@@ -187,9 +211,9 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void makerNotFound(String barcode) {
         getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, MakerNotFoundFragment.newInstance(barcode))
                 .addToBackStack(null)
-                .replace(R.id.container, MakerNotFoundFragment.newInstance(barcode))
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @Override

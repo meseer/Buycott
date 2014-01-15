@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
+import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.ignite.buycott.R;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -25,7 +26,8 @@ public class Makers extends SQLiteAssetHelper {
         this.context = context;
     }
 
-    public Cursor getProduct(String barcode) {
+
+    public Cursor getProductOld(String barcode) {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
@@ -56,11 +58,62 @@ public class Makers extends SQLiteAssetHelper {
     }
 
     public Cursor getProductOrMakers(String barcode) {
-        Cursor c = getProduct(barcode);
+        Cursor c = getProductOld(barcode);
         if (c.getCount() == 0 && barcode.length() == 13) {
             c = getMaker(barcode);
         }
         return c;
+    }
+
+    public Cursor getProduct(String barcode) {
+        if (barcode != null && barcode.length() == 13) {
+            Integer countryCode = Integer.valueOf(barcode.substring(0,3));
+            Integer makerCode = Integer.valueOf(barcode.substring(3, 8));
+
+            String sql = "SELECT r.Barcode as _id,\n" +
+                    "       r.Maker as Maker,\n" +
+                    "       r.Title as Title,\n" +
+                    "       r.AltMaker as AltMaker,\n" +
+                    "       b.Type as Type,\n" +
+                    "       b.Owner as Owner,\n" +
+                    "       b.Affiliation as Affiliation,\n" +
+                    "       b.Alternative as Alternative\n" +
+                    "  FROM ( \n" +
+                    "    SELECT m.Barcode,\n" +
+                    "           m.Maker,\n" +
+                    "           m.Title,\n" +
+                    "           AltMaker\n" +
+                    "      FROM ( \n" +
+                    "            SELECT DISTINCT Maker AS AltMaker\n" +
+                    "                       FROM makers\n" +
+                    "                      WHERE CountryCode = ? \n" +
+                    "                            AND\n" +
+                    "                            MakerCode = ? \n" +
+                    "                            AND\n" +
+                    "                            Maker <> '' \n" +
+                    "        ) \n" +
+                    "    \n" +
+                    "           LEFT JOIN ( \n" +
+                    "            SELECT *\n" +
+                    "              FROM makers\n" +
+                    "             WHERE Barcode = ? \n" +
+                    "        ) \n" +
+                    "        AS m \n" +
+                    ") \n" +
+                    "AS r\n" +
+                    "       LEFT JOIN blacklist b\n" +
+                    "              ON b.Maker = r.AltMaker\n" +
+                    " ORDER BY b.Owner DESC\n" +
+                    " LIMIT 1;\n";
+
+
+            SQLiteDatabase db = getReadableDatabase();
+
+            return db.rawQuery(sql,
+                    new String[]{Integer.toString(countryCode), Integer.toString(makerCode), barcode == null ? "" : barcode});
+        }
+
+        return null;
     }
 
     public static Makers instance(Context context) {
