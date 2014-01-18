@@ -23,11 +23,11 @@ import com.ignite.buycott.R;
  *
  */
 public class MakerDetailsFragment extends Fragment {
-    private static final String MAKER_NAME = "MakerName";
-    private static final String OWNER_NAME = "OwnerName";
-    private static final String TYPE_NAME = "TypeName";
-    private static final String AFFILIATION_NAME = "AffiliationName";
-    private static final String ALTERNATIVE_NAME = "AlternativeName";
+    public static final String MAKER_NAME = "MakerName";
+    public static final String OWNER_NAME = "OwnerName";
+    public static final String TYPE_NAME = "TypeName";
+    public static final String AFFILIATION_NAME = "AffiliationName";
+    public static final String ALTERNATIVE_NAME = "AlternativeName";
 
     private BlacklistedMaker maker;
 
@@ -52,6 +52,7 @@ public class MakerDetailsFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     public MakerDetailsFragment() {
         // Required empty public constructor
     }
@@ -80,7 +81,7 @@ public class MakerDetailsFragment extends Fragment {
         ((TextView) view.findViewById(R.id.typeName)).setText(maker.type);
         ((TextView) view.findViewById(R.id.affiliationName)).setText(maker.affiliation);
         if (TextUtils.isEmpty(maker.alternative)) {
-            //hide label or whole row
+            //TODO: hide label or whole row
 //            ((TextView)view.findViewById(R.id.alternativeLabel)).setTex
         } else {
             ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.alternative);

@@ -25,7 +25,7 @@ import java.util.Map;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ScanResultsFragment.OnScanResultsInteractionListener,
-        CatalogFragment.CatalogInteractionListener,
+        CatalogFragment.CatalogCallbacks,
         MakerDetailsFragment.OnFragmentInteractionListener,
         MakerNotFoundFragment.OnFragmentInteractionListener {
 
@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity
     private Map<String, Class<? extends Fragment>> drawerFragmentClassMap;
     private Map<String, Fragment> drawerFragmentMap = new HashMap<>();
     private Makers mDb;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,20 @@ public class MainActivity extends ActionBarActivity
         }
         if (fragment == null) {
             throw new RuntimeException("Fragment " + fragmentTag + " could not be created nor found!");
+        }
+
+        if (findViewById(R.id.maker_detail_container) != null) {
+            // The detail container view will be present only in the
+            // large-screen layouts (res/values-large and
+            // res/values-sw600dp). If this view is present, then the
+            // activity should be in two-pane mode.
+            mTwoPane = true;
+
+            // In two-pane mode, list items should be given the
+            // 'activated' state when touched.
+            ((CatalogFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.item_list))
+                    .setActivateOnItemClick(true);
         }
 
         fragmentManager.beginTransaction()
@@ -227,10 +242,24 @@ public class MainActivity extends ActionBarActivity
     public void onMakerSelected(long blacklistId) {
         BlacklistedMaker maker = mDb.getBlacklistedMaker(blacklistId);
         MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
-        getSupportFragmentManager().beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.container, fragment, "makerDetails")
-                .commit();
+        if (mTwoPane) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.maker_detail_container, fragment)
+                    .commit();
+        } else {
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
+            detailIntent.putExtra(MakerDetailsFragment.MAKER_NAME, maker.maker);
+            detailIntent.putExtra(MakerDetailsFragment.OWNER_NAME, maker.owner);
+            detailIntent.putExtra(MakerDetailsFragment.TYPE_NAME, maker.type);
+            detailIntent.putExtra(MakerDetailsFragment.AFFILIATION_NAME, maker.affiliation);
+            detailIntent.putExtra(MakerDetailsFragment.ALTERNATIVE_NAME, maker.alternative);
+            startActivity(detailIntent);
+        }
     }
 
     @Override

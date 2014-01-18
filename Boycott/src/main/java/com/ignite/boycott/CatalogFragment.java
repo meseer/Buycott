@@ -16,27 +16,29 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
  * Created by mdelegan on 08.01.14.
  */
 public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String SELECTED_ITEM_ID = "SelectedItemId";
+    private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private SimpleCursorAdapter mAdapter;
     private Makers mDb;
-    private CatalogInteractionListener mListener;
-    private long mSelectedItemId;
+    private CatalogCallbacks mCallbacks;
+    private int mActivatedPosition = ListView.INVALID_POSITION;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(SELECTED_ITEM_ID, mSelectedItemId);
+        if (mActivatedPosition != ListView.INVALID_POSITION) {
+            // Serialize and persist the activated item position.
+            outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+        }
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        try {
-            mListener = (CatalogInteractionListener) activity;
-        } catch (ClassCastException e) {
+        if (!(activity instanceof CatalogCallbacks)) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        mCallbacks = (CatalogCallbacks) activity;
 
         ((MainActivity) activity).onSectionAttached(2);
     }
@@ -59,12 +61,13 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_ITEM_ID)) {
-            mSelectedItemId = savedInstanceState.getLong(SELECTED_ITEM_ID);
-            mListener.onMakerSelected(mSelectedItemId);
+        // Restore the previously serialized activated item position.
+        if (savedInstanceState != null
+                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
     }
 
@@ -92,13 +95,40 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        mListener.onMakerSelected(id);
-        mSelectedItemId = id;
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
-    public interface CatalogInteractionListener {
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        mCallbacks.onMakerSelected(id);
+    }
+
+    /**
+     * Turns on activate-on-click mode. When this mode is on, list items will be
+     * given the 'activated' state when touched.
+     */
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically
+        // give items the 'activated' state when touched.
+        getListView().setChoiceMode(activateOnItemClick
+                ? ListView.CHOICE_MODE_SINGLE
+                : ListView.CHOICE_MODE_NONE);
+    }
+
+    private void setActivatedPosition(int position) {
+        if (position == ListView.INVALID_POSITION) {
+            getListView().setItemChecked(mActivatedPosition, false);
+        } else {
+            getListView().setItemChecked(position, true);
+        }
+
+        mActivatedPosition = position;
+    }
+    
+    public interface CatalogCallbacks {
         public void onMakerSelected(long blacklistId);
     }
 }
