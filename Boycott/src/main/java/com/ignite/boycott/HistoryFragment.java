@@ -21,7 +21,7 @@ public class HistoryFragment extends ListFragment {
             mListener = (ScanResultsFragment.OnScanResultsInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MakerDetailsCallback");
         }
 
         ((MainActivity) activity).onSectionAttached(3);

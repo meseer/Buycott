@@ -35,7 +35,7 @@ public class ScanResultsFragment extends ListFragment {
             mListener = (OnScanResultsInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MakerDetailsCallback");
         }
 
         ((MainActivity) activity).onSectionAttached(1);
@@ -103,16 +103,6 @@ public class ScanResultsFragment extends ListFragment {
         mListener = null;
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        if (null != mListener) {
-            // Notify the active callbacks interface (the activity, if the
-            // fragment is attached to one) that an item has been selected.
-            mListener.onFragmentInteraction(""+id);
-        }
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -124,8 +114,6 @@ public class ScanResultsFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnScanResultsInteractionListener {
-        public void onFragmentInteraction(String id);
-
         void makerNotFound(String barcode);
     }
 }

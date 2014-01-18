@@ -24,6 +24,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.ignite.boycott.MakerDetailActivity"
+            android:label="@string/title_maker_detail"
+            android:parentActivityName="com.ignite.boycott.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ignite.boycott.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.ignite.boycott.MakerNotFoundActivity"
+            android:label="@string/title_maker_not_found"
+            android:parentActivityName="com.ignite.boycott.MakerNotFoundActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ignite.boycott.MainActivity" />
+        </activity>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="ac0a316a616e8e302410ac8567057c376d4cc9e3"/>
     </application>
 

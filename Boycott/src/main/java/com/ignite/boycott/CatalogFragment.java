@@ -36,7 +36,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         super.onAttach(activity);
         if (!(activity instanceof CatalogCallbacks)) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MakerDetailsCallback");
         }
         mCallbacks = (CatalogCallbacks) activity;
 

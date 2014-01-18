@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ignite.buycott.BuildConfig;
 import com.ignite.buycott.R;
 
 import java.lang.InstantiationException;
@@ -26,8 +27,7 @@ public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         ScanResultsFragment.OnScanResultsInteractionListener,
         CatalogFragment.CatalogCallbacks,
-        MakerDetailsFragment.OnFragmentInteractionListener,
-        MakerNotFoundFragment.OnFragmentInteractionListener {
+        MakerDetailsFragment.MakerDetailsCallback {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+        if (!BuildConfig.DEBUG) Crashlytics.start(this);
 
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
@@ -226,16 +226,10 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onFragmentInteraction(String id) {
-        Toast.makeText(this, "Tap", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void makerNotFound(String barcode) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, MakerNotFoundFragment.newInstance(barcode))
-                .addToBackStack(null)
-                .commitAllowingStateLoss();
+        Intent makerNotFoundIntent = new Intent(this, MakerNotFoundActivity.class);
+        makerNotFoundIntent.putExtra(MakerNotFoundActivity.BARCODE, barcode);
+        startActivity(makerNotFoundIntent);
     }
 
     @Override
@@ -266,12 +260,4 @@ public class MainActivity extends ActionBarActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-    @Override
-    public void reportMakerNotFound(String barcode, String maker, String product) {
-        Crashlytics.logException(new MakerNotFoundException(barcode, maker, product));
-        getSupportFragmentManager().popBackStack();
-        Toast.makeText(this, R.string.thank_you, Toast.LENGTH_SHORT).show();
-    }
-
 }

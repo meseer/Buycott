@@ -1,29 +1,38 @@
 package com.ignite.boycott;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.ignite.buycott.R;
 
-/**
- * An activity representing a single Item detail screen. This
- * activity is only used on handset devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
- * in a {@link com.ignite.boycott.CatalogFragment}.
- * <p>
- * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link MakerDetailsFragment}.
- */
-public class MakerDetailActivity extends ActionBarActivity implements MakerDetailsFragment.MakerDetailsCallback {
+//TODO: Ask confirmation on back/up navigation
+public class MakerNotFoundActivity extends ActionBarActivity implements View.OnClickListener {
+    public static final String BARCODE = "barcode";
+
+    private String barcode;
+    private Button mNotifyButton;
+    private EditText mBarcodeEditBox;
+    private EditText mMakerEditBox;
+    private EditText mProductEditBox;
+
+    public MakerNotFoundActivity() {
+        // Required empty public constructor
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maker_detail);
+        setContentView(R.layout.activity_maker_not_found);
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -40,23 +49,10 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.MAKER_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.OWNER_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.TYPE_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.AFFILIATION_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.ALTERNATIVE_NAME);
-            MakerDetailsFragment fragment = new MakerDetailsFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.maker_detail_container, fragment)
-                    .commit();
+            barcode = getIntent().getStringExtra(BARCODE);
         }
-    }
 
-    private void copyStringExtraFromIntent(Bundle arguments, String id) {
-        arguments.putString(id,
-                getIntent().getStringExtra(id));
+        setUp();
     }
 
     @Override
@@ -76,8 +72,28 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void setUp() {
+        mNotifyButton = (Button)findViewById(R.id.maker_notify);
+        mNotifyButton.setOnClickListener(this);
 
+        mBarcodeEditBox = (EditText)findViewById(R.id.not_found_barcode);
+        mBarcodeEditBox.setText(barcode);
+
+        mMakerEditBox = (EditText)findViewById(R.id.not_found_maker);
+        mProductEditBox = (EditText)findViewById(R.id.not_found_product);
     }
+
+    @Override
+    public void onClick(View v) {
+        reportMakerNotFound(barcode,
+                mMakerEditBox.getText().toString(),
+                mProductEditBox.getText().toString());
+    }
+
+    public void reportMakerNotFound(String barcode, String maker, String product) {
+        Crashlytics.logException(new MakerNotFoundException(barcode, maker, product));
+        this.finish();
+        Toast.makeText(this, R.string.thank_you, Toast.LENGTH_SHORT).show();
+    }
+
 }

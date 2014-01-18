@@ -16,7 +16,7 @@ import com.ignite.buycott.R;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MakerDetailsFragment.OnFragmentInteractionListener} interface
+ * {@link com.ignite.boycott.MakerDetailsFragment.MakerDetailsCallback} interface
  * to handle interaction events.
  * Use the {@link MakerDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -31,7 +31,7 @@ public class MakerDetailsFragment extends Fragment {
 
     private BlacklistedMaker maker;
 
-    private OnFragmentInteractionListener mListener;
+    private MakerDetailsCallback mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -100,10 +100,10 @@ public class MakerDetailsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (MakerDetailsCallback) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement MakerDetailsCallback");
         }
     }
 
@@ -123,7 +123,7 @@ public class MakerDetailsFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface MakerDetailsCallback {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
