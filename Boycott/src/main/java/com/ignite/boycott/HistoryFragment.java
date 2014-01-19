@@ -12,19 +12,19 @@ import com.ignite.buycott.R;
  * Created by mdelegan on 08.01.14.
  */
 public class HistoryFragment extends ListFragment {
-    private ScanResultsFragment.OnScanResultsInteractionListener mListener;
+    private HistoryCallbacks mListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (ScanResultsFragment.OnScanResultsInteractionListener) activity;
+            mListener = (HistoryCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement MakerDetailsCallback");
+                    + " must implement HistoryCallbacks");
         }
 
-        ((MainActivity) activity).onSectionAttached(3);
+        ((MainActivity) activity).onSectionAttached(2);
     }
 
     @Override
@@ -32,5 +32,9 @@ public class HistoryFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
         setListAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_2, new String[0]));
         setEmptyText(getString(R.string.history_hint));
+    }
+
+    public interface HistoryCallbacks {
+
     }
 }

@@ -1,7 +1,6 @@
 package com.ignite.boycott;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -25,7 +24,7 @@ import java.util.Map;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         CatalogFragment.CatalogCallbacks,
-        MakerDetailsFragment.MakerDetailsCallback {
+        HistoryFragment.HistoryCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -210,10 +209,5 @@ public class MainActivity extends ActionBarActivity
             detailIntent.putExtra(MakerDetailsFragment.ALTERNATIVE_NAME, maker.alternative);
             startActivity(detailIntent);
         }
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }
