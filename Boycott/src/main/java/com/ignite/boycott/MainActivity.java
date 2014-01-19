@@ -1,7 +1,6 @@
 package com.ignite.boycott;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,7 +24,6 @@ import java.util.Map;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        ScanResultsFragment.OnScanResultsInteractionListener,
         CatalogFragment.CatalogCallbacks,
         MakerDetailsFragment.MakerDetailsCallback {
 
@@ -64,9 +62,8 @@ public class MainActivity extends ActionBarActivity
 
     private void setUpNavigationDrawerElements() {
         drawerFragmentClassMap = new HashMap<>();
-        drawerFragmentClassMap.put(fragmentTag(0), ScanResultsFragment.class);
-        drawerFragmentClassMap.put(fragmentTag(1), CatalogFragment.class);
-        drawerFragmentClassMap.put(fragmentTag(2), HistoryFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(0), CatalogFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(1), HistoryFragment.class);
     }
 
     @Override
@@ -126,12 +123,9 @@ public class MainActivity extends ActionBarActivity
     public void onSectionAttached(int position) {
         switch(position) {
             case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
                 mTitle = getString(R.string.title_section2);
                 break;
-            case 3:
+            case 2:
                 mTitle = getString(R.string.title_section3);
                 break;
         }
@@ -189,47 +183,9 @@ public class MainActivity extends ActionBarActivity
             return;
         }
 
-        Cursor cursor = mDb.getProduct(code);
-        if (cursor.getCount() > 0) {
-            ScanResultsFragment f = (ScanResultsFragment) getSupportFragmentManager().findFragmentByTag(fragmentTag(0));
-            if (f != null) {
-                f.onScanResult(cursor);
-                if (f.isHidden()) {
-                    getSupportFragmentManager().beginTransaction()
-                            .show(f)
-                            .addToBackStack(null)
-                            .commitAllowingStateLoss();
-                }
-            }
-            if (isBlacklisted(cursor)) {
-                //TODO: Show blacklisted view
-                //getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
-            } else {
-                //TODO: Show whitelisted view
-                //getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-            }
-        } else {
-            makerNotFound(code);
-        }
-    }
-
-    private boolean isBlacklisted(Cursor product) {
-        if (product.getCount() == 0) return false;
-
-        int makerIndex = product.getColumnIndexOrThrow("Owner");
-        product.moveToFirst();
-        do {
-            if (product.getString(makerIndex) != null) return true;
-        } while (product.moveToNext());
-
-        return false;
-    }
-
-    @Override
-    public void makerNotFound(String barcode) {
-        Intent makerNotFoundIntent = new Intent(this, MakerNotFoundActivity.class);
-        makerNotFoundIntent.putExtra(MakerNotFoundActivity.BARCODE, barcode);
-        startActivity(makerNotFoundIntent);
+        Intent scanResultsIntent = new Intent(this, ScanResultsActivity.class);
+        scanResultsIntent.putExtra(ScanResultsActivity.BARCODE, code);
+        startActivity(scanResultsIntent);
     }
 
     @Override

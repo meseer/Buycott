@@ -88,9 +88,11 @@ android {
 
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
-//    compile 'com.android.support:support-v4:+'
-
+    compile 'com.android.support:support-v4:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    //    
+
+    
     compile files('libs/CWAC-LoaderEx.jar')
     compile project(':android-sqlite-asset-helper')
     compile project(':zxing-android-integration')

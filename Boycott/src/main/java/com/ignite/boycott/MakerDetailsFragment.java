@@ -22,6 +22,7 @@ import com.ignite.buycott.R;
  * create an instance of this fragment.
  *
  */
+//TODO: Ask confirmation on back/up navigation
 public class MakerDetailsFragment extends Fragment {
     public static final String MAKER_NAME = "MakerName";
     public static final String OWNER_NAME = "OwnerName";

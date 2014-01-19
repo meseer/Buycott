@@ -13,16 +13,14 @@ import com.ignite.buycott.R;
 /**
  * Created by meseer on 01.01.14.
  */
+//TODO: Rollback MakerNotFoundActivity to Fragment and use it here as one of the options (greed, red, not found)
+//TODO: Use this ScanResultFragment as on of the options
 public class ScanResultsFragment extends ListFragment {
     private static final String ARG_BARCODE = "BARCODE";
     private SimpleCursorAdapter mAdapter;
     private OnScanResultsInteractionListener mListener;
     private String barcode;
-
-    public static ScanResultsFragment newInstance() {
-        ScanResultsFragment fragment = new ScanResultsFragment();
-        return fragment;
-    }
+    private Cursor mCursor;
 
     public ScanResultsFragment() {
         // Required empty public constructor
@@ -35,10 +33,11 @@ public class ScanResultsFragment extends ListFragment {
             mListener = (OnScanResultsInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement MakerDetailsCallback");
+                    + " must implement OnScanResultsInteractionListener");
         }
 
-        ((MainActivity) activity).onSectionAttached(1);
+        if (activity instanceof MainActivity)
+            ((MainActivity) activity).onSectionAttached(1);
     }
 
     @Override
@@ -61,15 +60,8 @@ public class ScanResultsFragment extends ListFragment {
                 new String[] {"_id", "Owner", "Maker", "Title"},
                 new int[] { R.id.barcode, R.id.owner, R.id.maker, R.id.title }, 0);
         setListAdapter(mAdapter);
+        if (mCursor != null) onScanResult(mCursor);
     }
-
-//    public void onViewCreated(View view, Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//        if (savedInstanceState != null && barcode == null) {
-//            barcode = savedInstanceState.getString(ARG_BARCODE);
-//        }
-//    }
 
     private boolean isBlacklisted(Cursor product) {
         if (product.getCount() == 0) return false;
@@ -84,16 +76,20 @@ public class ScanResultsFragment extends ListFragment {
     }
 
     public void onScanResult(Cursor cursor) {
-        mAdapter.swapCursor(cursor);
-        if (isBlacklisted(cursor)) {
-            getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+        if (mAdapter != null) {
+            mAdapter.swapCursor(cursor);
+            if (isBlacklisted(cursor)) {
+                getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_red_light));
+            } else {
+                getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+            }
+            if (isResumed()) {
+                setListShown(true);
+            } else {
+                setListShownNoAnimation(true);
+            }
         } else {
-            getListView().setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-        }
-        if (isResumed()) {
-            setListShown(true);
-        } else {
-            setListShownNoAnimation(true);
+            mCursor = cursor;
         }
     }
 
@@ -114,6 +110,6 @@ public class ScanResultsFragment extends ListFragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnScanResultsInteractionListener {
-        void makerNotFound(String barcode);
+        void reportMistake(String barcode);
     }
 }

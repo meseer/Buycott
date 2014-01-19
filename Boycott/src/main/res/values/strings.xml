@@ -34,5 +34,6 @@
     <string name="maker_hint">Maker</string>
     <string name="title_maker_detail">Maker Details</string>
     <string name="title_maker_not_found">Maker not found!</string>
+    <string name="title_activity_scan_results">Scan Results</string>
 
 </resources>
