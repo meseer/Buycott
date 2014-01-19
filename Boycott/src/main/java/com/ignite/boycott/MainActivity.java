@@ -26,6 +26,25 @@ public class MainActivity extends ActionBarActivity
         CatalogFragment.CatalogCallbacks,
         HistoryFragment.HistoryCallbacks {
 
+    public enum Fragments {
+        CATALOG(0, R.string.title_section2),
+        HISTORY(1, R.string.title_section3);
+        public final int n;
+        public final int titleId;
+
+        Fragments(int n, int titleId) {
+            this.n = n;
+            this.titleId = titleId;
+        }
+
+        public static Fragments valueOf(int i) {
+            switch(i) {
+                case 0 : return CATALOG;
+                case 1 : return HISTORY;
+                default : throw new IllegalStateException("Unknown fragment no #" + i);
+            }
+        }
+    };
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -61,12 +80,12 @@ public class MainActivity extends ActionBarActivity
 
     private void setUpNavigationDrawerElements() {
         drawerFragmentClassMap = new HashMap<>();
-        drawerFragmentClassMap.put(fragmentTag(0), CatalogFragment.class);
-        drawerFragmentClassMap.put(fragmentTag(1), HistoryFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(Fragments.CATALOG), CatalogFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(Fragments.HISTORY), HistoryFragment.class);
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(Fragments position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         String fragmentTag = fragmentTag(position);
@@ -107,7 +126,7 @@ public class MainActivity extends ActionBarActivity
                 .commit();
     }
 
-    private String fragmentTag(int position) {
+    private String fragmentTag(Fragments position) {
         return MainActivity.class.getName() + "." + position;
     }
 
@@ -119,15 +138,8 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    public void onSectionAttached(int position) {
-        switch(position) {
-            case 1:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+    public void onSectionAttached(Fragments position) {
+        mTitle = getString(position.titleId);
     }
 
     public void restoreActionBar() {

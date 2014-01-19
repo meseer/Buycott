@@ -24,7 +24,7 @@ public class HistoryFragment extends ListFragment {
                     + " must implement HistoryCallbacks");
         }
 
-        ((MainActivity) activity).onSectionAttached(2);
+        ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.HISTORY);
     }
 
     @Override

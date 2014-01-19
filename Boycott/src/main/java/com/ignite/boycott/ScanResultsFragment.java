@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.View;
-import android.widget.ListView;
 
 import com.ignite.buycott.R;
 
@@ -18,7 +16,7 @@ import com.ignite.buycott.R;
 public class ScanResultsFragment extends ListFragment {
     private static final String ARG_BARCODE = "BARCODE";
     private SimpleCursorAdapter mAdapter;
-    private OnScanResultsInteractionListener mListener;
+    private ScanResultCallbacks mListener;
     private String barcode;
     private Cursor mCursor;
 
@@ -30,14 +28,11 @@ public class ScanResultsFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnScanResultsInteractionListener) activity;
+            mListener = (ScanResultCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnScanResultsInteractionListener");
+                    + " must implement ScanResultCallbacks");
         }
-
-        if (activity instanceof MainActivity)
-            ((MainActivity) activity).onSectionAttached(1);
     }
 
     @Override
@@ -109,7 +104,7 @@ public class ScanResultsFragment extends ListFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnScanResultsInteractionListener {
+    public interface ScanResultCallbacks {
         void reportMistake(String barcode);
     }
 }

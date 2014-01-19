@@ -14,7 +14,7 @@ import com.crashlytics.android.Crashlytics;
 import com.ignite.buycott.R;
 
 public class ScanResultsActivity extends ActionBarActivity implements MakerNotFoundFragment.MakerNotFoundCallbacks,
-        ScanResultsFragment.OnScanResultsInteractionListener {
+        ScanResultsFragment.ScanResultCallbacks {
 
     public static final String BARCODE = "barcode";
     private String mBarcode;

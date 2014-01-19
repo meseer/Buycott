@@ -40,7 +40,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         }
         mCallbacks = (CatalogCallbacks) activity;
 
-        ((MainActivity) activity).onSectionAttached(1);
+        ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
     }
 
     @Override
