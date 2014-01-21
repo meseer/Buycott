@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
 
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 
 /**
  * Created by meseer on 01.01.14.
  */
-//TODO: Rollback MakerNotFoundActivity to Fragment and use it here as one of the options (greed, red, not found)
-//TODO: Use this ScanResultFragment as on of the options
 public class ScanResultsFragment extends ListFragment {
     private static final String ARG_BARCODE = "BARCODE";
     private SimpleCursorAdapter mAdapter;

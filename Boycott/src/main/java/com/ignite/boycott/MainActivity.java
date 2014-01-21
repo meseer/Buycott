@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ignite.buycott.BuildConfig;
-import com.ignite.buycott.R;
+import com.ignite.boycott.BuildConfig;
+import com.ignite.boycott.R;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
-        mDb = Makers.instance(this);
+        mDb = new Makers(this);
 
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)

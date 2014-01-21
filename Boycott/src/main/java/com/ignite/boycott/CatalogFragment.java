@@ -47,7 +47,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDb = Makers.instance(this.getActivity());
+        mDb = new Makers(this.getActivity());
 
         this.setRetainInstance(true);
 

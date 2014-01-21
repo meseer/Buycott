@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 
 public class ScanResultsActivity extends ActionBarActivity implements MakerNotFoundFragment.MakerNotFoundCallbacks,
         ScanResultsFragment.ScanResultCallbacks {
@@ -28,7 +28,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDb = Makers.instance(this);
+        mDb = new Makers(this);
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -48,14 +48,32 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
     }
 
     private Fragment createFragment() {
-        Cursor cursor = mDb.getProduct(mBarcode);
-        if (cursor.getCount() > 0) {
+        if (mDb.containsProduct(mBarcode)) {
+            //barcode in the database => show product page
+            //check blacklisted status according to maker code, not maker name (create mapping between blacklisted maker name and codes)
             ScanResultsFragment f = new ScanResultsFragment();
-            f.onScanResult(cursor);
+            f.onScanResult(mDb.getProduct(mBarcode));
             return f;
         } else {
-            return MakerNotFoundFragment.newInstance(mBarcode);
+            if (mDb.containsMaker(mBarcode)) {
+                //barcode not in the database => show blacklist status for the maker names related to the maker code (sorted), add option to choose correct maker name (or write) and specify product name
+                ScanResultsFragment f = new ScanResultsFragment();
+                f.onScanResult(mDb.getMaker(mBarcode));
+                return f;
+            } else {
+                //barcode not in the database and maker is unknown => show MakerNotFounFragment
+                return MakerNotFoundFragment.newInstance(mBarcode);
+            }
         }
+
+//        Cursor cursor = mDb.getProduct(mBarcode);
+//        if (cursor.getCount() > 0) {
+//            ScanResultsFragment f = new ScanResultsFragment();
+//            f.onScanResult(cursor);
+//            return f;
+//        } else {
+//            return MakerNotFoundFragment.newInstance(mBarcode);
+//        }
     }
 
     @Override

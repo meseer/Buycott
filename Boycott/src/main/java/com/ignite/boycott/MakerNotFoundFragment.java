@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 
 
 /**

@@ -6,7 +6,7 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 
 /**
  * Created by mdelegan on 08.01.14.

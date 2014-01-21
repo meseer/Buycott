@@ -7,7 +7,7 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 
 /**
  * An activity representing a single Item detail screen. This

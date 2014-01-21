@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.ignite.buycott.R;
+import com.ignite.boycott.R;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.List;
@@ -17,16 +17,15 @@ import java.util.List;
 public class Makers extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "makers";
-    private static Makers instance;
     private final Context context;
 
     //TODO: Test database roll-out when not enough space on device
-    private Makers(Context context) {
+    public Makers(Context context) {
         super(context, name, null, version);
         this.context = context;
     }
 
-
+    @Deprecated
     public Cursor getProductOld(String barcode) {
         SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
@@ -40,21 +39,30 @@ public class Makers extends SQLiteAssetHelper {
     }
 
     public Cursor getMaker(String code) {
-        Integer countryCode = Integer.valueOf(code.substring(0,3));
-        Integer makerCode = Integer.valueOf(code.substring(3, 8));
+        String countryCode = getCountryCode(code);
+        String makerCode = getMakerCode(code);
 
         SQLiteDatabase db = getReadableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
-        qb.setTables("makers m left outer join blacklist b on m.Maker = b.Maker");
-        String[] sqlSelect = {"Barcode as _id", "m.Maker as Maker", "'" + context.getString(R.string.n_a) + "' as Title",
-                              "Type", "Owner", "Affiliation"};
-        Cursor c = qb.query(db, sqlSelect,
-                "MakerCode = ? and m.Maker <> '' and CountryCode = ?",
-                new String[] { Integer.toString(makerCode), Integer.toString(countryCode) },
-                "m.Maker", "length(Barcode) = 13", "Owner desc");
+        String sql = "SELECT Barcode AS _id,\n" +
+                "       m.Maker AS Maker,\n" +
+                "       'N/A' AS Title,\n" +
+                "       Type,\n" +
+                "       Owner,\n" +
+                "       Affiliation\n" +
+                "  FROM makers m\n" +
+                "       LEFT OUTER JOIN blacklist b\n" +
+                "                    ON m.Maker = b.Maker\n" +
+                "WHERE MakerCode = ? \n" +
+                "       AND\n" +
+                "       m.Maker <> '' \n" +
+                "       AND\n" +
+                "       CountryCode = ?\n" +
+                "GROUP BY m.Maker\n" +
+                "HAVING length( Barcode ) = 13\n" +
+                "ORDER BY count(m.Maker) DESC;\n";
 
-        return c;
+        return db.rawQuery(sql, new String[] {makerCode, countryCode});
     }
 
     public Cursor getProductOrMakers(String barcode) {
@@ -67,8 +75,8 @@ public class Makers extends SQLiteAssetHelper {
 
     public Cursor getProduct(String barcode) {
         if (barcode != null && barcode.length() == 13) {
-            Integer countryCode = Integer.valueOf(barcode.substring(0,3));
-            Integer makerCode = Integer.valueOf(barcode.substring(3, 8));
+            String countryCode = getCountryCode(barcode);
+            String makerCode = getMakerCode(barcode);
 
             String sql = "SELECT r.Barcode as _id,\n" +
                     "       r.Maker as Maker,\n" +
@@ -110,21 +118,18 @@ public class Makers extends SQLiteAssetHelper {
             SQLiteDatabase db = getReadableDatabase();
 
             return db.rawQuery(sql,
-                    new String[]{Integer.toString(countryCode), Integer.toString(makerCode), barcode == null ? "" : barcode});
+                    new String[]{countryCode, makerCode, barcode == null ? "" : barcode});
         }
 
         return null;
     }
 
-    public static Makers instance(Context context) {
-        if (instance == null) {
-            synchronized (Makers.class) {
-                if (instance == null) {
-                    instance = new Makers(context);
-                }
-            }
-        }
-        return instance;
+    private String getCountryCode(String barcode) {
+        return barcode.substring(0, 3);
+    }
+
+    private String getMakerCode(String barcode) {
+        return barcode.substring(3, 8);
     }
 
     public BlacklistedMaker getBlacklistedMaker(long blacklistId) {
@@ -139,5 +144,23 @@ public class Makers extends SQLiteAssetHelper {
 
         return BlacklistedMaker.fromCursor(c);
 
+    }
+
+    public boolean containsProduct(String mBarcode) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("select 1 from makers where barcode = ?", new String[] {mBarcode});
+
+        return c.getCount() > 0;
+    }
+
+    public boolean containsMaker(String mBarcode) {
+        String sql = "select 1 from makers where CountryCode = ? and MakerCode = ? and Maker <> ''";
+        String countryCode = getCountryCode(mBarcode);
+        String makerCode = getMakerCode(mBarcode);
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery(sql, new String[]{countryCode, makerCode});
+
+        return c.getCount() > 0;
     }
 }
