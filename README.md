@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/meseer/boycott.png?label=ready)](https://waffle.io/meseer/boycott)
 Buycott
 =======
 Pet project for learning how to make apps for Android.
