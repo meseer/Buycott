@@ -7,7 +7,6 @@ jdk: oraclejdk7
 #    - ANDROID_SDKS=android-19,sysimg-19  ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
 before_install:
   - chmod +x gradlew
-
   # Install base Android SDK
   - sudo apt-get update -qq
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
@@ -15,7 +14,6 @@ before_install:
   - tar xzf android-sdk_r22.3-linux.tgz
   - export ANDROID_HOME=$PWD/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-
  # install android build tools
   - wget https://dl-ssl.google.com/android/repository/build-tools_r19.0.1-linux.zip
   - unzip build-tools_r19.0.1-linux.zip -d $ANDROID_HOME
