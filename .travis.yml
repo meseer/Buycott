@@ -5,6 +5,9 @@ jdk: oraclejdk7
 #env:
 #  matrix:
 #    - ANDROID_SDKS=android-19,sysimg-19  ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+branches:
+  only:
+    - master
 before_install:
   - chmod +x gradlew
   # Install base Android SDK
