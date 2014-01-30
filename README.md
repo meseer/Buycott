@@ -1,5 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/meseer/boycott.png?label=ready)](https://waffle.io/meseer/boycott)
-Buycott
+# Boycott [![Build Status](https://secure.travis-ci.org/meseer/boycott.png)](http://travis-ci.org/meseer/boycott) [![Stories in Ready](https://badge.waffle.io/meseer/boycott.png?label=ready)](https://waffle.io/meseer/boycott)
 =======
 Pet project for learning how to make apps for Android.
 
