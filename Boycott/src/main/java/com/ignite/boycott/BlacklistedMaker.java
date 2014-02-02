@@ -65,7 +65,7 @@ public class BlacklistedMaker implements Parcelable {
         this.alternative = in.readString();
     }
 
-    static final Creator<BlacklistedMaker> CREATOR = new Creator<BlacklistedMaker>() {
+    public static final Creator<BlacklistedMaker> CREATOR = new Creator<BlacklistedMaker>() {
         @Override
         public BlacklistedMaker createFromParcel(Parcel source) {
             return new BlacklistedMaker(source);

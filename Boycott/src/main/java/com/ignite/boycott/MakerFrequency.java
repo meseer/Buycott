@@ -26,7 +26,7 @@ public class MakerFrequency implements Parcelable {
         dest.writeInt(totalProducts);
     }
 
-    static final Creator<MakerFrequency> CREATOR = new Creator<MakerFrequency>() {
+    public static final Creator<MakerFrequency> CREATOR = new Creator<MakerFrequency>() {
         @Override
         public MakerFrequency createFromParcel(Parcel source) {
             return new MakerFrequency(source.readString(), source.readInt());

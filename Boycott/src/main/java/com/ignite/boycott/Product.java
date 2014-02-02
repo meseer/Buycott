@@ -55,7 +55,7 @@ public class Product implements Parcelable {
         dest.writeInt(mCountryCode);
     }
 
-    static final Creator<Product> CREATOR = new Creator<Product>() {
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
         public Product createFromParcel(Parcel source) {
             return new Product(source);
