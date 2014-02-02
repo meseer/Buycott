@@ -7,8 +7,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
-import com.ignite.boycott.R;
-
 /**
  * An activity representing a single Item detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
@@ -41,22 +39,13 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.MAKER_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.OWNER_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.TYPE_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.AFFILIATION_NAME);
-            copyStringExtraFromIntent(arguments, MakerDetailsFragment.ALTERNATIVE_NAME);
+            arguments.putParcelable(MakerDetailsFragment.MAKER, getIntent().getParcelableExtra(MakerDetailsFragment.MAKER));
             MakerDetailsFragment fragment = new MakerDetailsFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.maker_detail_container, fragment)
                     .commit();
         }
-    }
-
-    private void copyStringExtraFromIntent(Bundle arguments, String id) {
-        arguments.putString(id,
-                getIntent().getStringExtra(id));
     }
 
     @Override

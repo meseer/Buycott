@@ -1,11 +1,13 @@
 package com.ignite.boycott;
 
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by meseer on 14.01.14.
  */
-public class BlacklistedMaker {
+public class BlacklistedMaker implements Parcelable {
     public final String maker;
     public final String owner;
     public final String type;
@@ -35,16 +37,11 @@ public class BlacklistedMaker {
         if (c.getCount() == 0) return null;
 
         c.moveToFirst();
-        int makerIdx = c.getColumnIndex("Maker");
-        int ownerIdx = c.getColumnIndex("Owner");
-        int typeIdx = c.getColumnIndex("Type");
-        int affiliationIdx = c.getColumnIndex("Affiliation");
-        int alternativeIdx = c.getColumnIndex("Alternative");
-
-        if (makerIdx == -1 || ownerIdx == -1 || typeIdx == -1 || affiliationIdx == -1 ||
-                alternativeIdx == -1) {
-            throw new IllegalArgumentException("Cursor doesn't some of the required fields: " + c);
-        }
+        int makerIdx = c.getColumnIndexOrThrow("Maker");
+        int ownerIdx = c.getColumnIndexOrThrow("Owner");
+        int typeIdx = c.getColumnIndexOrThrow("Type");
+        int affiliationIdx = c.getColumnIndexOrThrow("Affiliation");
+        int alternativeIdx = c.getColumnIndexOrThrow("Alternative");
 
         return new BlacklistedMaker(
                 c.getString(makerIdx),
@@ -53,5 +50,39 @@ public class BlacklistedMaker {
                 c.getString(affiliationIdx),
                 c.getString(alternativeIdx)
         );
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    BlacklistedMaker(Parcel in) {
+        this.maker = in.readString();
+        this.owner = in.readString();
+        this.type = in.readString();
+        this.affiliation = in.readString();
+        this.alternative = in.readString();
+    }
+
+    static final Creator<BlacklistedMaker> CREATOR = new Creator<BlacklistedMaker>() {
+        @Override
+        public BlacklistedMaker createFromParcel(Parcel source) {
+            return new BlacklistedMaker(source);
+        }
+
+        @Override
+        public BlacklistedMaker[] newArray(int size) {
+            return new BlacklistedMaker[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(maker);
+        dest.writeString(owner);
+        dest.writeString(type);
+        dest.writeString(affiliation);
+        dest.writeString(alternative);
     }
 }

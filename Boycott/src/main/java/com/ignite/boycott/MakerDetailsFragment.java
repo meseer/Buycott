@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ignite.boycott.R;
-
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -24,11 +22,7 @@ import com.ignite.boycott.R;
  */
 //TODO: Ask confirmation on back/up navigation
 public class MakerDetailsFragment extends Fragment {
-    public static final String MAKER_NAME = "MakerName";
-    public static final String OWNER_NAME = "OwnerName";
-    public static final String TYPE_NAME = "TypeName";
-    public static final String AFFILIATION_NAME = "AffiliationName";
-    public static final String ALTERNATIVE_NAME = "AlternativeName";
+    public static final String MAKER = "Maker";
 
     private BlacklistedMaker maker;
 
@@ -45,11 +39,7 @@ public class MakerDetailsFragment extends Fragment {
     public static MakerDetailsFragment newInstance(BlacklistedMaker maker) {
         MakerDetailsFragment fragment = new MakerDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(MAKER_NAME, maker.maker);
-        args.putString(OWNER_NAME, maker.owner);
-        args.putString(TYPE_NAME, maker.type);
-        args.putString(AFFILIATION_NAME, maker.affiliation);
-        args.putString(ALTERNATIVE_NAME, maker.alternative);
+        args.putParcelable(MAKER, maker);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,13 +52,7 @@ public class MakerDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            maker = new BlacklistedMaker(
-                    getArguments().getString(MAKER_NAME),
-                    getArguments().getString(OWNER_NAME),
-                    getArguments().getString(TYPE_NAME),
-                    getArguments().getString(AFFILIATION_NAME),
-                    getArguments().getString(ALTERNATIVE_NAME)
-            );
+            maker = (BlacklistedMaker) getArguments().getParcelable(MAKER);
         }
     }
 

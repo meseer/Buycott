@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.ignite.boycott.BuildConfig;
-import com.ignite.boycott.R;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -214,11 +212,7 @@ public class MainActivity extends ActionBarActivity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, MakerDetailActivity.class);
-            detailIntent.putExtra(MakerDetailsFragment.MAKER_NAME, maker.maker);
-            detailIntent.putExtra(MakerDetailsFragment.OWNER_NAME, maker.owner);
-            detailIntent.putExtra(MakerDetailsFragment.TYPE_NAME, maker.type);
-            detailIntent.putExtra(MakerDetailsFragment.AFFILIATION_NAME, maker.affiliation);
-            detailIntent.putExtra(MakerDetailsFragment.ALTERNATIVE_NAME, maker.alternative);
+            detailIntent.putExtra(MakerDetailsFragment.MAKER, maker);
             startActivity(detailIntent);
         }
     }
