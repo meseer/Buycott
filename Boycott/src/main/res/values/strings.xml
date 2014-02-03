@@ -36,5 +36,6 @@
     <string name="title_maker_not_found">Maker not found!</string>
     <string name="title_activity_scan_results">Scan Results</string>
     <string name="product_not_found">Product not found!</string>
+    <string name="product_not_found_invitation">Please help us improve the database</string>
 
 </resources>
