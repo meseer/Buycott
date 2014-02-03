@@ -56,7 +56,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         }
 
         ArrayList<MakerFrequency> makers = mDb.getMakers(mBarcode);
-        if (makers != null) {
+        if (makers != null && !makers.isEmpty()) {
             //barcode not in the database => show blacklist status for the maker names related to the maker code (sorted), add option to choose correct maker name (or write) and specify product name
             return ScanResultsFragment.newInstance(makers, mBarcode);
         }
