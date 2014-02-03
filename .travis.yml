@@ -6,8 +6,10 @@ jdk: oraclejdk7
 env:
     matrix:
     - ANDROID_SDKS=android-10            ANDROID_TARGET=android-10  ANDROID_ABI=armeabi
-    - ANDROID_SDKS=sysimg-16             ANDROID_TARGET=android-16  ANDROID_ABI=armeabi-v7a
+    - ANDROID_SDKS=android-15,sysimg-15  ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
+    - ANDROID_SDKS=android-16,sysimg-16  ANDROID_TARGET=android-16  ANDROID_ABI=armeabi-v7a
     - ANDROID_SDKS=android-17,sysimg-17  ANDROID_TARGET=android-17  ANDROID_ABI=armeabi-v7a
+    - ANDROID_SDKS=android-18,sysimg-18  ANDROID_TARGET=android-18  ANDROID_ABI=armeabi-v7a
     - ANDROID_SDKS=android-19,sysimg-19  ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
 branches:
   only:
@@ -31,11 +33,11 @@ before_install:
 
   # Install required components.
   # For a full list, run `android list sdk -a --extended`
-  # Note that sysimg-18 downloads the ARM, x86 and MIPS images (we should optimize this).
+  # Note that sysimg-19 downloads the ARM, x86 and MIPS images (we should optimize this).
   # Other relevant API's
   - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter sysimg-19 --no-ui --force > /dev/null
+  # - echo yes | android update sdk --filter android-19 --no-ui --force > /dev/null
+  # - echo yes | android update sdk --filter sysimg-19 --no-ui --force > /dev/null
   - echo yes | android update sdk --filter $ANDROID_SDKS --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
   - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
