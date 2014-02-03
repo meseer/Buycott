@@ -63,7 +63,7 @@
                     android:id="@+id/not_found_barcode"
                     android:layout_gravity="right"
                     android:editable="false"
-                    android:enabled="false"
+                    android:enabled="true"
                     android:focusable="false"
                     android:numeric="integer"
                     android:gravity="right"

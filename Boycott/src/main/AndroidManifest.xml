@@ -35,6 +35,7 @@
         <activity
             android:name="com.ignite.boycott.ScanResultsActivity"
             android:label="@string/title_activity_scan_results"
+            android:windowSoftInputMode="adjustResize"
             android:parentActivityName="com.ignite.boycott.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
