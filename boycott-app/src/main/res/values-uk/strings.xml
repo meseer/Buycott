@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Бойкот</string>
+    <string name="title_section1">Сканер</string>
+    <string name="title_section2">Каталог</string>
+    <string name="title_section3">Історія</string>
+    <string name="navigation_drawer_open">Відкрити панель навігації</string>
+    <string name="navigation_drawer_close">Закрити панель навігації</string>
+    <string name="action_scan">Сканувати</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="scan_hint">Сканувати штрих-код</string>
+    <string name="scan_failed">Не вдалося відсканувати штрих-код</string>
+    <string name="maker_not_found">Виробника не знайдено</string>
+    <string name="scanned_code">Відскановано штрих-код %s</string>
+    <string name="clean">Купуйте!</string>
+    <string name="blacklisted">Занесено до чорного списку</string>
+    <string name="n_a">Невідомий товар</string>
+    <string name="press_scan">Торкніться \'<b>Скануати</b>\' щоб відсканувати штрих-код</string>
+    <string name="history_hint">Історія ваших сканувань буде тут</string>
+    <string name="code_too_short">Відсканований штрих-код надто короткий\n(очікували 13 цифр)</string>
+    <string name="scan_cancelled">Ви відмовилися від сканування штрих-коду</string>
+    <string name="ownerLabel">Власник</string>
+    <string name="typeLabel">Опис</string>
+    <string name="affiliationLabel">Причетність</string>
+    <string name="alternativeLabel">Альтернатива</string>
+    <string name="Barcode">Штрих-код</string>
+    <string name="maker_notify">Повідомити</string>
+    <string name="thank_you">Спасибі!</string>
+    <string name="maker">Виробник</string>
+    <string name="maker_optional">Виробник (не обов’язково)</string>
+    <string name="not_found_product_label">Назва товару</string>
+    <string name="product_name_hint">Назва товару</string>
+    <string name="maker_hint">Виробник</string>
+    <string name="title_maker_detail">Інформація про виробника</string>
+    <string name="title_maker_not_found">Виробника не знайдено</string>
+    <string name="title_activity_scan_results">Результати сканування</string>
+    <string name="product_not_found">Товар не знайдено</string>
+    <string name="product_not_found_invitation">Будь ласка, допоможіть наповнити базу товарів</string>
+</resources>
