@@ -42,7 +42,7 @@ public class MainActivity extends ActionBarActivity
                 default : throw new IllegalStateException("Unknown fragment no #" + i);
             }
         }
-    };
+    }
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private Map<String, Class<? extends Fragment>> drawerFragmentClassMap;
     private Map<String, Fragment> drawerFragmentMap = new HashMap<>();
-    private Makers mDb;
+    private BlacklistDao mBlacklist;
     private boolean mTwoPane;
 
     @Override
@@ -66,7 +66,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
-        mDb = new Makers(this);
+        mBlacklist = new BlacklistDao(this);
 
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -199,7 +199,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onMakerSelected(long blacklistId) {
-        BlacklistedMaker maker = mDb.getBlacklistedMaker(blacklistId);
+        BlacklistedMaker maker = mBlacklist.getBlacklistedMaker(blacklistId);
         MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by

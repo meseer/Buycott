@@ -3,7 +3,6 @@ package com.ignite.boycott;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -29,19 +28,6 @@ public class Makers extends SQLiteAssetHelper {
 
     private String getMakerCode(String barcode) {
         return barcode.substring(3, 8);
-    }
-
-    public BlacklistedMaker getBlacklistedMaker(long blacklistId) {
-        SQLiteDatabase db = getReadableDatabase();
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-
-        qb.setTables("blacklist");
-        String[] sqlSelect = {"Maker", "Type", "Owner", "Affiliation", "Alternative"};
-        Cursor c = qb.query(db, sqlSelect,
-                "_id = ?",
-                new String[] { Long.toString(blacklistId) }, null, null, null);
-
-        return BlacklistedMaker.fromCursor(c);
     }
 
     public Product getProduct(String barcode) {
@@ -76,14 +62,5 @@ public class Makers extends SQLiteAssetHelper {
             result.add(new MakerFrequency(c.getString(makerId), c.getInt(countId)));
         }
         return result;
-    }
-
-    public String getOwner(String maker) {
-        Cursor c = getReadableDatabase().rawQuery("select Owner from blacklist where Maker = ?",
-                new String[] {maker});
-        if (c.getCount() == 0) return null;
-
-        c.moveToFirst();
-        return c.getString(0);
     }
 }

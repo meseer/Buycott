@@ -18,7 +18,7 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private SimpleCursorAdapter mAdapter;
-    private Makers mDb;
+    private BlacklistDao blacklistDao;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
@@ -47,7 +47,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mDb = new Makers(this.getActivity());
+        blacklistDao = new BlacklistDao(this.getActivity());
 
         this.setRetainInstance(true);
 
@@ -73,9 +73,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String sql = "select _id, Maker, Owner from blacklist";
-
-        return new SQLiteCursorLoader(this.getActivity(), mDb, sql, null);
+        return BlacklistDao.newHistoryLoader(this.getActivity());
     }
 
     @Override
