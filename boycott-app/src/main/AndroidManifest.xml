@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ignite.boycott"
     android:versionCode="24"
-    android:versionName="1.0.24-alpha" >
+    android:versionName="1.0.24-alpha">
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -20,9 +20,11 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.intent.action.SEARCH" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name="com.ignite.boycott.MakerDetailActivity"

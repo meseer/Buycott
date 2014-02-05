@@ -1,12 +1,19 @@
 package com.ignite.boycott;
 
 import android.app.Activity;
+import android.app.SearchManager;
+import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -17,10 +24,20 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
  */
 public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    private static final String QUERY = "QUERY";
     private SimpleCursorAdapter mAdapter;
-    private BlacklistDao blacklistDao;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
+    private String query;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(QUERY)) {
+            query = args.getString(QUERY);
+        }
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -39,15 +56,41 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
                     + " must implement MakerDetailsCallback");
         }
         mCallbacks = (CatalogCallbacks) activity;
+        setHasOptionsMenu(true);
 
         ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.catalog_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchManager searchManager =
+                    (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+            MenuItem searchItem = menu.findItem(R.id.search);
+            SearchView searchView =
+                    (SearchView) searchItem.getActionView();
+            searchView.setSearchableInfo(
+                    searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.search:
+                getActivity().onSearchRequested();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        blacklistDao = new BlacklistDao(this.getActivity());
 
         this.setRetainInstance(true);
 
@@ -73,7 +116,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return BlacklistDao.newHistoryLoader(this.getActivity());
+        return BlacklistDao.newHistoryLoader(this.getActivity(), query);
     }
 
     @Override
@@ -125,7 +168,15 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
         mActivatedPosition = position;
     }
-    
+
+    public static CatalogFragment newInstance(String query) {
+        CatalogFragment fragment = new CatalogFragment();
+        Bundle args = new Bundle();
+        args.putString(QUERY, query);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public interface CatalogCallbacks {
         public void onMakerSelected(long blacklistId);
     }

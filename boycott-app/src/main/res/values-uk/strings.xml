@@ -36,4 +36,7 @@
     <string name="title_activity_scan_results">Результати сканування</string>
     <string name="product_not_found">Товар не знайдено</string>
     <string name="product_not_found_invitation">Будь ласка, допоможіть наповнити базу товарів</string>
+    <string name="search_title">Пошук</string>
+    <string name="search_hint">Введіть виробника</string>
+    <string name="searching_toast">Шукаємо \'%s\'...</string>
 </resources>

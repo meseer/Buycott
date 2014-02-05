@@ -51,6 +51,7 @@ public class ScanResultsFragment extends ListFragment {
 
     private String findOwner(String maker) {
         //TODO: Do this in background (e.g. use Bolts)
+        //TODO: get Owner list by Maker code, not by name, to include sub-contractors for known products
         return blacklist.getOwner(maker);
     }
 
@@ -78,7 +79,6 @@ public class ScanResultsFragment extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         setRetainInstance(true);
-
         setEmptyText(getString(R.string.press_scan));
 
         blacklist = new BlacklistDao(getActivity());

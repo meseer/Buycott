@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -52,11 +53,17 @@ public class BlacklistDao extends SQLiteAssetHelper {
      *  <li>_id</li>
      *  <li>Maker</li>
      *  <li>Owner</li>
+     *
      * @param activity
+     * @param query
      * @return
      */
-    public static Loader<Cursor> newHistoryLoader(Activity activity) {
+    public static Loader<Cursor> newHistoryLoader(Activity activity, String query) {
         String sql = "select _id, Maker, Owner from blacklist";
+        if (!TextUtils.isEmpty(query)) {
+            sql += " where Maker like '%" + query + "%'";
+            sql += " or Owner like '%" + query + "%'";
+        }
 
         return new SQLiteCursorLoader(activity, new BlacklistDao(activity), sql, null);
     }

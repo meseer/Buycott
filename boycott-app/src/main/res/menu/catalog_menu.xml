@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:boycott="http://schemas.android.com/apk/res-auto"
+    tools:context="com.ignite.boycott.MainActivity">
+    <item android:id="@+id/search"
+        android:title="@string/search_title"
+        boycott:icon="@drawable/abc_ic_search"
+        boycott:showAsAction="always"
+        boycott:actionViewClass="android.support.v7.widget.SearchView" />
+</menu>
