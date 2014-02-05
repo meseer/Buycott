@@ -34,4 +34,16 @@ public class HistoryDao extends SQLiteAssetHelper {
 
         return new SQLiteCursorLoader(activity, new HistoryDao(activity), sql, null);
     }
+
+    public long log(HistoryEntry entry) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        long id = db.insert("history", null, entry.asContentValues());
+
+        return id;
+    }
+
+    public void log(String mBarcode) {
+        log(new HistoryEntry(null, mBarcode, null, null, null));
+    }
 }

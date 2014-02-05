@@ -19,6 +19,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
     public static final String BARCODE = "barcode";
     private String mBarcode;
     private Makers mDb;
+    private HistoryDao historyDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,8 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mDb = new Makers(this);
+        historyDao = new HistoryDao(this);
+
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity
         // (e.g. when rotating the screen from portrait to landscape).
@@ -48,6 +51,9 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
     }
 
     private Fragment createFragment() {
+        //TODO: Add to History in background
+        historyDao.log(mBarcode);
+
         Product product = mDb.getProduct(mBarcode);
         if (product != null) {
             //barcode in the database => show product page
