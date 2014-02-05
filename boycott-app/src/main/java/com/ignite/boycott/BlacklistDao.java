@@ -55,14 +55,14 @@ public class BlacklistDao extends SQLiteAssetHelper {
      *  <li>Owner</li>
      *
      * @param activity
-     * @param query
+     * @param filter
      * @return
      */
-    public static Loader<Cursor> newHistoryLoader(Activity activity, String query) {
+    public static Loader<Cursor> newHistoryLoader(Activity activity, String filter) {
         String sql = "select _id, Maker, Owner from blacklist";
-        if (!TextUtils.isEmpty(query)) {
-            sql += " where Maker like '%" + query + "%'";
-            sql += " or Owner like '%" + query + "%'";
+        if (!TextUtils.isEmpty(filter)) {
+            sql += " where Maker like '%" + filter + "%'";
+            sql += " or Owner like '%" + filter + "%'";
         }
 
         return new SQLiteCursorLoader(activity, new BlacklistDao(activity), sql, null);

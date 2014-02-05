@@ -1,5 +1,6 @@
 package com.ignite.boycott;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Context;
@@ -16,8 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-
-import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 
 /**
  * Created by mdelegan on 08.01.14.
@@ -61,7 +60,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
     }
 
-    @Override
+    @Override @TargetApi(11)
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.catalog_menu, menu);
 
