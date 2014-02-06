@@ -26,20 +26,14 @@ import android.widget.ListView;
  */
 public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    private static final String QUERY = "QUERY";
     private SimpleCursorAdapter mAdapter;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
-    private String query;
     private BlacklistDao blacklistDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle args = getArguments();
-        if (args != null && args.containsKey(QUERY)) {
-            query = args.getString(QUERY);
-        }
     }
 
     @Override
@@ -69,13 +63,10 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.catalog_menu, menu);
 
-        // Associate searchable configuration with the SearchView
-        SearchManager searchManager =
-                (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchItem = menu.findItem(R.id.search);
-
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         getListView().setTextFilterEnabled(true);
+
         mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence constraint) {
@@ -140,7 +131,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return BlacklistDao.newHistoryLoader(this.getActivity(), query);
+        return BlacklistDao.newHistoryLoader(this.getActivity());
     }
 
     @Override
@@ -191,14 +182,6 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         }
 
         mActivatedPosition = position;
-    }
-
-    public static CatalogFragment newInstance(String query) {
-        CatalogFragment fragment = new CatalogFragment();
-        Bundle args = new Bundle();
-        args.putString(QUERY, query);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     public interface CatalogCallbacks {

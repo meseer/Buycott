@@ -58,17 +58,14 @@ public class BlacklistDao extends SQLiteAssetHelper {
      * @param filter
      * @return
      */
-    public static Loader<Cursor> newHistoryLoader(Activity activity, String filter) {
+    public static Loader<Cursor> newHistoryLoader(Activity activity) {
         String sql = "select _id, Maker, Owner from blacklist";
-        if (!TextUtils.isEmpty(filter)) {
-            sql += " where Maker like '%" + filter + "%'";
-            sql += " or Owner like '%" + filter + "%'";
-        }
 
         return new SQLiteCursorLoader(activity, new BlacklistDao(activity), sql, null);
     }
 
     public Cursor getBlacklisted(CharSequence constraint) {
+        //TODO: Somehow implement case-insensitive filtering
         String sql = "select _id, Maker, Owner from blacklist";
         String args[] = null;
         if (!TextUtils.isEmpty(constraint)) {

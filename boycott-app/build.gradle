@@ -64,6 +64,16 @@ android {
     }
 
     buildTypes {
+        // Uncomment this to debug proguarded code
+//        debug {
+//            runProguard true
+//            debuggable true
+//            proguardFile getDefaultProguardFile('proguard-android.txt')
+//            proguardFile 'tools/proguard/proguard-boycott.txt'
+//            signingConfig signingConfigs.release
+//            jniDebugBuild false
+//            zipAlign true
+//        }
         release {
             runProguard true
             debuggable false
