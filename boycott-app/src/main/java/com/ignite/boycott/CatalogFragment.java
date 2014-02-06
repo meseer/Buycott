@@ -13,10 +13,12 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 
 /**
@@ -29,6 +31,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private String query;
+    private BlacklistDao blacklistDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
                     + " must implement MakerDetailsCallback");
         }
         mCallbacks = (CatalogCallbacks) activity;
+        blacklistDao = new BlacklistDao(activity);
         setHasOptionsMenu(true);
 
         ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
@@ -71,8 +75,30 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         MenuItem searchItem = menu.findItem(R.id.search);
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getActivity().getComponentName()));
+        getListView().setTextFilterEnabled(true);
+        mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                //TODO: Query on background thread, e.g. runQueryOnBackgroundThread
+                return blacklistDao.getBlacklisted(constraint);
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (TextUtils.isEmpty(s)) {
+                    getListView().clearTextFilter();
+                } else {
+                    getListView().setFilterText(s);
+                }
+                return true;
+            }
+        });
     }
 
     @Override

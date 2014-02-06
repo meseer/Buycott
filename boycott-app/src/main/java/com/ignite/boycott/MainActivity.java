@@ -1,6 +1,5 @@
 package com.ignite.boycott;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -75,22 +74,6 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-
-        handleIntent(getIntent());
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
-    }
-
-    private void handleIntent(Intent intent) {
-        if (intent != null && Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            Toast.makeText(this, getString(R.string.searching_toast, query), Toast.LENGTH_SHORT).show();
-            CatalogFragment catalogFragment = CatalogFragment.newInstance(query);
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, catalogFragment).commit();
-        }
     }
 
     private void setUpNavigationDrawerElements() {

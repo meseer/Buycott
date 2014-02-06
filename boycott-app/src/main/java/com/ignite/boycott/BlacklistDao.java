@@ -67,4 +67,17 @@ public class BlacklistDao extends SQLiteAssetHelper {
 
         return new SQLiteCursorLoader(activity, new BlacklistDao(activity), sql, null);
     }
+
+    public Cursor getBlacklisted(CharSequence constraint) {
+        String sql = "select _id, Maker, Owner from blacklist";
+        String args[] = null;
+        if (!TextUtils.isEmpty(constraint)) {
+            sql += " where Maker like ?";
+            sql += " or Owner like ?";
+            String likeClause = "%" + constraint + "%";
+            args = new String[] {likeClause, likeClause};
+        }
+
+        return getReadableDatabase().rawQuery(sql, args);
+    }
 }

@@ -38,7 +38,6 @@
     <string name="product_not_found">Product not found</string>
     <string name="product_not_found_invitation">Please help us improve the database</string>
     <string name="search_title">Search</string>
-    <string name="search_hint">Enter maker name</string>
     <string name="searching_toast">Searching for \'%s\'...</string>
 
 </resources>
