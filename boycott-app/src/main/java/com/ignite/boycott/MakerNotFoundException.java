@@ -20,10 +20,10 @@ class MakerNotFoundException extends RuntimeException {
     public String getMessage() {
         StringBuilder b = new StringBuilder("Maker not found for barcode ");
         b.append(barcode);
-        if (TextUtils.isEmpty(maker)) {
+        if (!TextUtils.isEmpty(maker)) {
             b.append(", made by '").append(maker).append("'");
         }
-        if (TextUtils.isEmpty(product)) {
+        if (!TextUtils.isEmpty(product)) {
             b.append(". Repotedly product name is '").append(product).append("'");
         }
         return b.toString();

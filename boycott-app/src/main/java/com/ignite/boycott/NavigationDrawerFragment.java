@@ -1,6 +1,7 @@
 package com.ignite.boycott;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -255,16 +256,12 @@ public class NavigationDrawerFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_scan:
-                onScan();
+                Intent scanResultsIntent = new Intent(getActivity(), ScanResultsActivity.class);
+                startActivity(scanResultsIntent);
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onScan() {
-        IntentIntegrator integrator = new IntentIntegrator(getActivity());
-        integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
     }
 
     /**

@@ -172,31 +172,6 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-
-        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
-        if (scanResult == null) {
-            Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String code = scanResult.getContents();
-        if (code == null) {
-            Toast.makeText(this, getString(R.string.scan_cancelled), Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (code.length() != 13) {
-            Toast.makeText(this, getString(R.string.code_too_short), Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        Intent scanResultsIntent = new Intent(this, ScanResultsActivity.class);
-        scanResultsIntent.putExtra(ScanResultsActivity.BARCODE, code);
-        startActivity(scanResultsIntent);
-    }
-
     @Override
     public void onMakerSelected(long blacklistId) {
         BlacklistedMaker maker = mBlacklist.getBlacklistedMaker(blacklistId);

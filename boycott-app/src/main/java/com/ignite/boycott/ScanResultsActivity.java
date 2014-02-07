@@ -5,11 +5,14 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 
@@ -43,11 +46,42 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         //
         //TODO: Check if it's ok to use db with different context, perhaps - not!
         if (savedInstanceState == null) {
-            mBarcode = getIntent().getStringExtra(BARCODE);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, createFragment())
-                    .commit();
+            Intent intent = getIntent();
+            if (intent != null) {
+                IntentIntegrator integrator = new IntentIntegrator(this);
+                integrator.initiateScan(IntentIntegrator.PRODUCT_CODE_TYPES);
+            }
         }
+
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanResult == null) {
+            Toast.makeText(this, getString(R.string.scan_failed), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        mBarcode = scanResult.getContents();
+        if (mBarcode == null) {
+            Toast.makeText(this, getString(R.string.scan_cancelled), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        if (mBarcode.length() != 13) {
+            Toast.makeText(this, getString(R.string.code_too_short), Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        // ????? Would it work, commitAllowingStateLoss?
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, createFragment())
+                .commit();
     }
 
     private Fragment createFragment() {
@@ -74,6 +108,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
 
     @Override
     public void reportMakerNotFound(String barcode, String maker, String product) {
+        Crashlytics.log(Log.INFO, "boycott-maker-not-found", "Barcode " + barcode + ", Maker " + maker + ", Product " + product);
         Crashlytics.logException(new MakerNotFoundException(barcode, maker, product));
         this.finish();
         Toast.makeText(this, R.string.thank_you, Toast.LENGTH_SHORT).show();
@@ -95,6 +130,11 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_scan) {
+            Intent scanResultsIntent = new Intent(this, ScanResultsActivity.class);
+            startActivity(scanResultsIntent);
+            return true;
+        }
         if (id == android.R.id.home) {
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
@@ -106,6 +146,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
             NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

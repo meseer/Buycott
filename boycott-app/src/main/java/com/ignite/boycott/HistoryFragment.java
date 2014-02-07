@@ -10,6 +10,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 
 /**
  * TODO: Add scan date, show only last several days, ability to load more when scrolled to the bottom
+ * TODO: History management: delete entry, clear all, etc.
  * Created by mdelegan on 08.01.14.
  */
 public class HistoryFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -34,7 +35,8 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
         super.onActivityCreated(savedInstanceState);
 
         mAdapter = new SimpleCursorAdapter(this.getActivity(), R.layout.productrow, null,
-                new String[] { "Maker", "Owner", "Barcode"}, new int[] { R.id.maker, R.id.owner, R.id.barcode } , 0);
+                new String[] { "Maker", "Owner", "Barcode", "ProductName"},
+                new int[] { R.id.maker, R.id.owner, R.id.barcode, R.id.title }, 0);
         setEmptyText(getString(R.string.history_hint));
 
         setListAdapter(mAdapter);
