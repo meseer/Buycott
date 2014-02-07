@@ -65,15 +65,6 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
         MenuItem searchItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        getListView().setTextFilterEnabled(true);
-
-        mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence constraint) {
-                //TODO: Query on background thread, e.g. runQueryOnBackgroundThread
-                return blacklistDao.getBlacklisted(constraint);
-            }
-        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -111,9 +102,17 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
         mAdapter = new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_2, null,
                 new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
+        mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                //TODO: Query on background thread, e.g. runQueryOnBackgroundThread
+                return blacklistDao.getBlacklisted(constraint);
+            }
+        });
 
         setListAdapter(mAdapter);
         setListShown(false);
+        getListView().setTextFilterEnabled(true);
 
         getLoaderManager().initLoader(0, null, this);
     }

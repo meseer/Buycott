@@ -9,6 +9,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 
 /**
+ * TODO: Add scan date, show only last several days, ability to load more when scrolled to the bottom
  * Created by mdelegan on 08.01.14.
  */
 public class HistoryFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -32,8 +33,8 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_2, null,
-                new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
+        mAdapter = new SimpleCursorAdapter(this.getActivity(), R.layout.productrow, null,
+                new String[] { "Maker", "Owner", "Barcode"}, new int[] { R.id.maker, R.id.owner, R.id.barcode } , 0);
         setEmptyText(getString(R.string.history_hint));
 
         setListAdapter(mAdapter);

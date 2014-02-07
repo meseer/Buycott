@@ -51,16 +51,17 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
     }
 
     private Fragment createFragment() {
-        //TODO: Add to History in background
-        historyDao.log(mBarcode);
-
         Product product = mDb.getProduct(mBarcode);
         if (product != null) {
             //barcode in the database => show product page
             //check blacklisted status according to maker code, not maker name (create mapping between blacklisted maker name and codes)
+            //TODO: Add to History in background
+            historyDao.log(new HistoryEntry(product));
             return ScanResultsFragment.newInstance(product);
         }
 
+        //TODO: Add to History in background
+        historyDao.log(mBarcode);
         ArrayList<MakerFrequency> makers = mDb.getMakers(mBarcode);
         if (makers != null && !makers.isEmpty()) {
             //barcode not in the database => show blacklist status for the maker names related to the maker code (sorted), add option to choose correct maker name (or write) and specify product name

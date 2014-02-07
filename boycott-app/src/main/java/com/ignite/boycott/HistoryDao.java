@@ -30,7 +30,7 @@ public class HistoryDao extends SQLiteAssetHelper {
             "ProductName", "WasBlacklisted"};
 
     public static Loader<Cursor> createLoader(FragmentActivity activity) {
-        String sql = "select _id, Barcode, Maker, Owner, ProductName, WasBlacklisted from history";
+        String sql = "select _id, Barcode, Maker, Owner, ProductName, WasBlacklisted from history order by _id desc";
 
         return new SQLiteCursorLoader(activity, new HistoryDao(activity), sql, null);
     }

@@ -20,6 +20,10 @@ public class HistoryEntry {
         this.productName = productName;
     }
 
+    public HistoryEntry(Product product) {
+        this(null, product.mBarcode, product.mMaker, null, product.mTitle);
+    }
+
     public ContentValues asContentValues() {
         ContentValues r = new ContentValues(5);
         r.put("WasBlacklisted", wasBlacklisted);
