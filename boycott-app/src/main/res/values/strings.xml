@@ -39,5 +39,6 @@
     <string name="product_not_found_invitation">Please help us improve the database</string>
     <string name="search_title">Search</string>
     <string name="searching_toast">Searching for \'%s\'...</string>
+    <string name="filtering_by">Filtering by \'%s\'</string>
 
 </resources>

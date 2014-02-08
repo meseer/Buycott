@@ -38,4 +38,5 @@
     <string name="product_not_found_invitation">Будь ласка, допоможіть наповнити базу товарів</string>
     <string name="search_title">Пошук</string>
     <string name="searching_toast">Шукаємо \'%s\'...</string>
+    <string name="filtering_by">Відфільтровано за \'%s\'</string>
 </resources>

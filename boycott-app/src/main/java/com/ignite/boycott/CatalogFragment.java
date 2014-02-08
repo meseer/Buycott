@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ignite.boycott.dao.BlacklistDao;
 
@@ -69,7 +70,9 @@ public class CatalogFragment extends ListFragment
         MenuItem searchItem = menu.findItem(R.id.search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         if (!TextUtils.isEmpty(mFilter)) {
+            //TODO: Show overlayed hint that filtering is enabled with option to disable it
             mSearchView.setQuery(mFilter, false);
+            Toast.makeText(this.getActivity(), getString(R.string.filtering_by, mFilter), Toast.LENGTH_SHORT).show();
         }
 
         mSearchView.setOnQueryTextListener(this);

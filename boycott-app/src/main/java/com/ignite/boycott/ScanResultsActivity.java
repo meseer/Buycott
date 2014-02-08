@@ -18,6 +18,7 @@ import com.ignite.boycott.reporting.crashlytics.CrashlyticsReporting;
 
 import java.util.ArrayList;
 
+//TODO: Allow opening navigation drawer from here ??
 public class ScanResultsActivity extends ActionBarActivity implements MakerNotFoundFragment.MakerNotFoundCallbacks,
         ScanResultsFragment.ScanResultCallbacks {
 
@@ -47,7 +48,6 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         //
         // http://developer.android.com/guide/components/fragments.html
         //
-        //TODO: Check if it's ok to use db with different context, perhaps - not!
         if (savedInstanceState == null) {
             Intent intent = getIntent();
             if (intent != null) {
@@ -81,7 +81,6 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
             return;
         }
 
-        // ????? Would it work, commitAllowingStateLoss?
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, createFragment())
                 .commit();
