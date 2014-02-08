@@ -6,20 +6,11 @@ import android.text.TextUtils;
 * Created by meseer on 16.01.14.
 */
 class MakerNotFoundException extends RuntimeException {
-    private final String barcode;
-    private final String product;
-    private final String maker;
-    private final Boolean blacklisted;
-
     public MakerNotFoundException(String barcode, String maker, String product, Boolean blacklisted) {
-        this.barcode = barcode;
-        this.maker = maker;
-        this.product = product;
-        this.blacklisted = blacklisted;
+        super(buildMessage(barcode, maker, product, blacklisted));
     }
 
-    @Override
-    public String getMessage() {
+    private static String buildMessage(String barcode, String maker, String product, Boolean blacklisted) {
         StringBuilder b = new StringBuilder("Maker not found for barcode ");
         b.append(barcode);
         if (!TextUtils.isEmpty(maker)) {
@@ -29,7 +20,7 @@ class MakerNotFoundException extends RuntimeException {
             b.append(". Repotedly product name is '").append(product).append("'");
         }
         if (blacklisted != null) {
-            b.append(" and it should" + (blacklisted?" ":" not ")+ "be blacklisted");
+            b.append(" and it should" + (blacklisted ? " " : " not ") + "be blacklisted");
         }
         return b.toString();
     }
