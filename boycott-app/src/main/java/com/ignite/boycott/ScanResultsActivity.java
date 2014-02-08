@@ -5,14 +5,16 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ignite.boycott.dao.HistoryDao;
+import com.ignite.boycott.dao.ProductsDao;
+import com.ignite.boycott.reporting.Reporting;
+import com.ignite.boycott.reporting.crashlytics.CrashlyticsReporting;
 
 import java.util.ArrayList;
 
@@ -20,8 +22,9 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         ScanResultsFragment.ScanResultCallbacks {
 
     public static final String BARCODE = "barcode";
+    private final Reporting reporting = new CrashlyticsReporting();
     private String mBarcode;
-    private Makers mDb;
+    private ProductsDao mDb;
     private HistoryDao historyDao;
 
     @Override
@@ -32,7 +35,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDb = new Makers(this);
+        mDb = new ProductsDao(this);
         historyDao = new HistoryDao(this);
 
         // savedInstanceState is non-null when there is fragment state
@@ -107,11 +110,10 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
     }
 
     @Override
-    public void reportMakerNotFound(String barcode, String maker, String product) {
-        Crashlytics.log(Log.INFO, "boycott-maker-not-found", "Barcode " + barcode + ", Maker " + maker + ", Product " + product);
-        Crashlytics.logException(new MakerNotFoundException(barcode, maker, product));
-        this.finish();
+    public void reportMakerNotFound(String barcode, String maker, String product, Boolean blacklisted) {
+        reporting.reportMakerNotFound(barcode, maker, product, blacklisted);
         Toast.makeText(this, R.string.thank_you, Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

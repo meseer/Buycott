@@ -1,9 +1,11 @@
-package com.ignite.boycott;
+package com.ignite.boycott.dao;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ignite.boycott.MakerFrequency;
+import com.ignite.boycott.Product;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
@@ -11,15 +13,13 @@ import java.util.ArrayList;
 /**
  * Created by meseer on 27.12.13.
  */
-public class Makers extends SQLiteAssetHelper {
+public class ProductsDao extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "makers";
-    private final Context context;
 
     //TODO: Test database roll-out when not enough space on device
-    public Makers(Context context) {
+    public ProductsDao(Context context) {
         super(context, name, null, version);
-        this.context = context;
     }
 
     private String getCountryCode(String barcode) {

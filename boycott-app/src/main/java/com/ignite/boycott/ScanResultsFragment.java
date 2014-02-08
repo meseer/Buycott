@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.widget.SimpleAdapter;
 
+import com.ignite.boycott.dao.BlacklistDao;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

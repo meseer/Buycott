@@ -8,6 +8,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 
+import com.ignite.boycott.dao.HistoryDao;
+
 /**
  * TODO: Add scan date, show only last several days, ability to load more when scrolled to the bottom
  * TODO: History management: delete entry, clear all, etc.

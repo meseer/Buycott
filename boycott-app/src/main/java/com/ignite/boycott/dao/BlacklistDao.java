@@ -1,15 +1,15 @@
-package com.ignite.boycott;
+package com.ignite.boycott.dao;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
+import com.ignite.boycott.BlacklistedMaker;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 /**

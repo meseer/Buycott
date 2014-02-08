@@ -79,9 +79,10 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        //TODO: implement blacklisted trigger
         mListener.reportMakerNotFound(barcode,
                 mMakerEditBox.getText().toString(),
-                mProductEditBox.getText().toString());
+                mProductEditBox.getText().toString(), null);
     }
 
     @Override
@@ -112,6 +113,6 @@ public class MakerNotFoundFragment extends Fragment implements View.OnClickListe
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface MakerNotFoundCallbacks {
-        void reportMakerNotFound(String barcode, String maker, String productName);
+        void reportMakerNotFound(String barcode, String maker, String productName, Boolean blacklisted);
     }
 }

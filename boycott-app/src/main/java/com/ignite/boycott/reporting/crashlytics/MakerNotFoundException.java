@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.reporting.crashlytics;
 
 import android.text.TextUtils;
 
@@ -9,11 +9,13 @@ class MakerNotFoundException extends RuntimeException {
     private final String barcode;
     private final String product;
     private final String maker;
+    private final Boolean blacklisted;
 
-    public MakerNotFoundException(String barcode, String maker, String product) {
+    public MakerNotFoundException(String barcode, String maker, String product, Boolean blacklisted) {
         this.barcode = barcode;
         this.maker = maker;
         this.product = product;
+        this.blacklisted = blacklisted;
     }
 
     @Override
@@ -25,6 +27,9 @@ class MakerNotFoundException extends RuntimeException {
         }
         if (!TextUtils.isEmpty(product)) {
             b.append(". Repotedly product name is '").append(product).append("'");
+        }
+        if (blacklisted != null) {
+            b.append(" and it should" + (blacklisted?" ":" not ")+ "be blacklisted");
         }
         return b.toString();
     }

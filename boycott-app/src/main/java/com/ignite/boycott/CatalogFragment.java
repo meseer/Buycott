@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.ignite.boycott.dao.BlacklistDao;
+
 /**
  * Created by mdelegan on 08.01.14.
  */
