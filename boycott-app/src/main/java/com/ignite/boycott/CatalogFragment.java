@@ -1,11 +1,7 @@
 package com.ignite.boycott;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.SearchManager;
-import android.content.Context;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -18,22 +14,27 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 
 /**
  * Created by mdelegan on 08.01.14.
  */
-public class CatalogFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class CatalogFragment extends ListFragment
+        implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    private static final String FILTER = "filter";
     private SimpleCursorAdapter mAdapter;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
-    private BlacklistDao blacklistDao;
+    private String mFilter;
+    private SearchView mSearchView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            mFilter = savedInstanceState.getString(FILTER);
+        }
     }
 
     @Override
@@ -43,6 +44,7 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
             // Serialize and persist the activated item position.
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
         }
+        outState.putString(FILTER, mFilter);
     }
 
     @Override
@@ -53,7 +55,6 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
                     + " must implement MakerDetailsCallback");
         }
         mCallbacks = (CatalogCallbacks) activity;
-        blacklistDao = new BlacklistDao(activity);
         setHasOptionsMenu(true);
 
         ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
@@ -64,23 +65,24 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
         inflater.inflate(R.menu.catalog_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        if (!TextUtils.isEmpty(mFilter)) {
+            mSearchView.setQuery(mFilter, false);
+        }
 
-            @Override
-            public boolean onQueryTextChange(String s) {
-                if (TextUtils.isEmpty(s)) {
-                    getListView().clearTextFilter();
-                } else {
-                    getListView().setFilterText(s);
-                }
-                return true;
-            }
-        });
+        mSearchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        mFilter = s;
+        getLoaderManager().restartLoader(0, null, CatalogFragment.this);
+        return true;
     }
 
     @Override
@@ -102,17 +104,9 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
         mAdapter = new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_2, null,
                 new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
-        mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
-            @Override
-            public Cursor runQuery(CharSequence constraint) {
-                //TODO: Query on background thread, e.g. runQueryOnBackgroundThread
-                return blacklistDao.getBlacklisted(constraint);
-            }
-        });
 
         setListAdapter(mAdapter);
         setListShown(false);
-        getListView().setTextFilterEnabled(true);
 
         getLoaderManager().initLoader(0, null, this);
     }
@@ -130,18 +124,18 @@ public class CatalogFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return BlacklistDao.newHistoryLoader(this.getActivity());
+        return BlacklistDao.newHistoryLoader(this.getActivity(), mFilter);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mAdapter.swapCursor(cursor);
+
         if (isResumed()) {
             setListShown(true);
         } else {
             setListShownNoAnimation(true);
         }
-
-        mAdapter.swapCursor(cursor);
     }
 
     @Override
