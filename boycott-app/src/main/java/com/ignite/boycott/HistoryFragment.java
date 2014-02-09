@@ -49,7 +49,7 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return HistoryDao.createLoader(this.getActivity());
+        return HistoryDao.createLoader(getActivity().getApplicationContext());
     }
 
     @Override

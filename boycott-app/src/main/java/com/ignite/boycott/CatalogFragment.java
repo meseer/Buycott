@@ -129,7 +129,7 @@ public class CatalogFragment extends ListFragment
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return BlacklistDao.newHistoryLoader(this.getActivity(), mFilter);
+        return BlacklistDao.newHistoryLoader(getActivity().getApplicationContext(), mFilter);
     }
 
     @Override

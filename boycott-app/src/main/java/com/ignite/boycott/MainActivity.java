@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
-        mBlacklist = new BlacklistDao(this);
+        mBlacklist = BlacklistDao.instance(this.getApplicationContext());
 
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)

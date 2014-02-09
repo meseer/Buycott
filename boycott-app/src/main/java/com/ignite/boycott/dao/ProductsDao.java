@@ -16,10 +16,23 @@ import java.util.ArrayList;
 public class ProductsDao extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "makers";
+    private static volatile ProductsDao productsDao;
+    private final SQLiteDatabase db;
 
     //TODO: Test database roll-out when not enough space on device
-    public ProductsDao(Context context) {
+    private ProductsDao(Context context) {
         super(context, name, null, version);
+        db = getReadableDatabase();
+    }
+
+    public static ProductsDao instance(Context context) {
+        if (productsDao == null) {
+            synchronized (BlacklistDao.class) {
+                if (productsDao == null)
+                    productsDao = new ProductsDao(context);
+            }
+        }
+        return productsDao;
     }
 
     private String getCountryCode(String barcode) {
@@ -31,8 +44,7 @@ public class ProductsDao extends SQLiteAssetHelper {
     }
 
     public Product getProduct(String barcode) {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("select Barcode,Maker,Title,CountryCode from makers where barcode = ?", new String[] {barcode});
+        Cursor c = db.rawQuery("select Barcode,Maker,Title,CountryCode from makers where barcode = ?", new String[]{barcode});
 
         Product product = Product.fromCursor(c);
         c.close();
@@ -53,7 +65,6 @@ public class ProductsDao extends SQLiteAssetHelper {
         String countryCode = getCountryCode(barcode);
         String makerCode = getMakerCode(barcode);
 
-        SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery(sql, new String[]{countryCode, makerCode});
 
         ArrayList<MakerFrequency> result = new ArrayList<>();

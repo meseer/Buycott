@@ -83,7 +83,7 @@ public class ScanResultsFragment extends ListFragment {
         setRetainInstance(true);
         setEmptyText(getString(R.string.press_scan));
 
-        blacklist = new BlacklistDao(getActivity());
+        blacklist = BlacklistDao.instance(getActivity().getApplicationContext());
         data = extractData(getArguments());
         if (getArguments() != null) {
             barcode = getArguments().getString(ARG_BARCODE);
