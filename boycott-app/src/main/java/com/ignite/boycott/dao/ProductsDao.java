@@ -34,7 +34,9 @@ public class ProductsDao extends SQLiteAssetHelper {
         SQLiteDatabase db = getReadableDatabase();
         Cursor c = db.rawQuery("select Barcode,Maker,Title,CountryCode from makers where barcode = ?", new String[] {barcode});
 
-        return Product.fromCursor(c);
+        Product product = Product.fromCursor(c);
+        c.close();
+        return product;
     }
 
     public ArrayList<MakerFrequency> getMakers(String barcode) {
@@ -61,6 +63,7 @@ public class ProductsDao extends SQLiteAssetHelper {
         while (c.moveToNext()) {
             result.add(new MakerFrequency(c.getString(makerId), c.getInt(countId)));
         }
+        c.close();
         return result;
     }
 }

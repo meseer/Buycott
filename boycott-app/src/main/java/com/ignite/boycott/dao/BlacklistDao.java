@@ -36,7 +36,9 @@ public class BlacklistDao extends SQLiteAssetHelper {
                 "_id = ?",
                 new String[]{Long.toString(blacklistId)}, null, null, null);
 
-        return BlacklistedMaker.fromCursor(c);
+        BlacklistedMaker maker = BlacklistedMaker.fromCursor(c);
+        c.close();
+        return maker;
     }
 
     public String getOwner(String maker) {
@@ -45,7 +47,9 @@ public class BlacklistDao extends SQLiteAssetHelper {
         if (c.getCount() == 0) return null;
 
         c.moveToFirst();
-        return c.getString(0);
+        String owner = c.getString(0);
+        c.close();
+        return owner;
     }
 
     /**
