@@ -16,32 +16,40 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 public class HistoryDao extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "history";
-    private final Context context;
+    private static volatile HistoryDao historyDao;
+    private final SQLiteDatabase db;
 
     //TODO: Test database roll-out when not enough space on device
-    public HistoryDao(Context context) {
+    private HistoryDao(Context context) {
         super(context, name, null, version);
-        this.context = context;
+
+        db = getWritableDatabase();
+    }
+
+    public static HistoryDao instance(Context context) {
+        if (historyDao == null) {
+            synchronized (BlacklistDao.class) {
+                if (historyDao == null)
+                    historyDao = new HistoryDao(context);
+            }
+        }
+        return historyDao;
     }
 
     public static String[] LOADER_COLUMNS = new String[] {"_id", "Barcode", "Maker", "Owner",
             "ProductName", "WasBlacklisted"};
 
-    public static Loader<Cursor> createLoader(FragmentActivity activity) {
+    public static Loader<Cursor> createLoader(Context context) {
         String sql = "select _id, Barcode, Maker, Owner, ProductName, WasBlacklisted from history order by _id desc";
 
-        return new SQLiteCursorLoader(activity, new HistoryDao(activity), sql, null);
+        return new SQLiteCursorLoader(context, new HistoryDao(context), sql, null);
     }
 
     public long log(HistoryEntry entry) {
-        SQLiteDatabase db = getWritableDatabase();
-
-        long id = db.insert("history", null, entry.asContentValues());
-
-        return id;
+        return db.insert("history", null, entry.asContentValues());
     }
 
-    public void log(String mBarcode) {
-        log(new HistoryEntry(null, mBarcode, null, null, null));
+    public long log(String mBarcode) {
+        return log(new HistoryEntry(null, mBarcode, null, null, null));
     }
 }

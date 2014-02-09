@@ -1,6 +1,5 @@
 package com.ignite.boycott.dao;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -20,17 +19,18 @@ import javax.inject.Inject;
 public class BlacklistDao extends SQLiteAssetHelper {
     private static final int version = 1;
     private static final String name = "blacklist";
-    private final Context context;
+    private static volatile BlacklistDao blacklistDao;
+    private final SQLiteDatabase db;
 
     //TODO: Test database roll-out when not enough space on device
     @Inject
-    public BlacklistDao(Context context) {
+    private BlacklistDao(Context context) {
         super(context, name, null, version);
-        this.context = context;
+
+        db = getReadableDatabase();
     }
 
     public BlacklistedMaker getBlacklistedMaker(long blacklistId) {
-        SQLiteDatabase db = getReadableDatabase();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         qb.setTables("blacklist");
@@ -39,16 +39,20 @@ public class BlacklistDao extends SQLiteAssetHelper {
                 "_id = ?",
                 new String[]{Long.toString(blacklistId)}, null, null, null);
 
-        return BlacklistedMaker.fromCursor(c);
+        BlacklistedMaker maker = BlacklistedMaker.fromCursor(c);
+        c.close();
+        return maker;
     }
 
     public String getOwner(String maker) {
-        Cursor c = getReadableDatabase().rawQuery("select Owner from blacklist where Maker = ?",
-                new String[] {maker});
+        Cursor c = db.rawQuery("select Owner from blacklist where Maker = ?",
+                new String[]{maker});
         if (c.getCount() == 0) return null;
 
         c.moveToFirst();
-        return c.getString(0);
+        String owner = c.getString(0);
+        c.close();
+        return owner;
     }
 
     /**
@@ -57,10 +61,10 @@ public class BlacklistDao extends SQLiteAssetHelper {
      *  <li>Maker</li>
      *  <li>Owner</li>
      *
-     * @param activity
+     * @param context
      * @return
      */
-    public static Loader<Cursor> newHistoryLoader(Activity activity, CharSequence constraint) {
+    public static Loader<Cursor> newHistoryLoader(Context context, CharSequence constraint) {
         String sql = "select _id, Maker, Owner from blacklist";
         String args[] = null;
         if (!TextUtils.isEmpty(constraint)) {
@@ -70,6 +74,16 @@ public class BlacklistDao extends SQLiteAssetHelper {
             args = new String[] {likeClause, likeClause};
         }
 
-        return new SQLiteCursorLoader(activity, new BlacklistDao(activity), sql, args);
+        return new SQLiteCursorLoader(context, instance(context), sql, args);
+    }
+
+    public static BlacklistDao instance(Context context) {
+        if (blacklistDao == null) {
+            synchronized (BlacklistDao.class) {
+                if (blacklistDao == null)
+                    blacklistDao = new BlacklistDao(context);
+            }
+        }
+        return blacklistDao;
     }
 }

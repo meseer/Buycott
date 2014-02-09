@@ -36,8 +36,8 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mDb = new ProductsDao(this);
-        historyDao = new HistoryDao(this);
+        mDb = ProductsDao.instance(getApplicationContext());
+        historyDao = HistoryDao.instance(getApplicationContext());
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity

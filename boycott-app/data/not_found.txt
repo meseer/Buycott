@@ -1,0 +1,12 @@
+#24
+Maker not found for barcode 4824034019342
+Maker not found for barcode 4824024000954
+Maker not found for barcode 8594910012403
+Maker not found for barcode 9827030021550
+Maker not found for barcode 4820177030039
+#39
+Maker not found for barcode 4823002200072
+Maker not found for barcode 4824035006877
+#42
+Maker not found for barcode 4824034020003, made by 'повна чаша'. Repotedly product name is 'крупа пшоно шліфоане, сорт перший'
+Maker not found for barcode 4823002219401, Maker ПАТ “Фармак", Product аптека
