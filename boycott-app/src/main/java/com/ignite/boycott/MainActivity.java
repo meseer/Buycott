@@ -1,7 +1,10 @@
 package com.ignite.boycott;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -58,7 +61,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!BuildConfig.DEBUG) Crashlytics.start(this);
+        if (BuildConfig.DEBUG) {
+            setUpStrictMode();
+        } else {
+            Crashlytics.start(this);
+        }
 
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
@@ -72,6 +79,28 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    private void setUpStrictMode() {
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                .detectDiskReads()
+                .detectDiskWrites()
+                .detectAll()
+                .penaltyLog()
+                .build());
+        StrictMode.VmPolicy.Builder vmPolicy = new StrictMode.VmPolicy.Builder()
+                .detectLeakedSqlLiteObjects()
+                .penaltyLog()
+                .penaltyDeath();
+        setUpStrictModeHoneycomb(vmPolicy);
+        StrictMode.setVmPolicy(vmPolicy.build());
+    }
+
+    @TargetApi(11)
+    private void setUpStrictModeHoneycomb(StrictMode.VmPolicy.Builder vmPolicy) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+            vmPolicy.detectLeakedClosableObjects();
+        }
     }
 
     private void setUpNavigationDrawerElements() {
@@ -172,6 +201,7 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onMakerSelected(long blacklistId) {
+        //TODO: Offload this to background thread
         BlacklistedMaker maker = mBlacklist.getBlacklistedMaker(blacklistId);
         MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
         if (mTwoPane) {
