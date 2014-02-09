@@ -100,6 +100,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.android.support:support-v4:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.squareup.dagger:dagger:1.2.0'
+    compile 'com.squareup.dagger:dagger-compiler:1.2.0'
 
     compile files('libs/CWAC-LoaderEx.jar')
     compile project(':android-sqlite-asset-helper')

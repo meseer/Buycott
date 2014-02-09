@@ -12,6 +12,8 @@ import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
 import com.ignite.boycott.BlacklistedMaker;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import javax.inject.Inject;
+
 /**
  * Created by meseer on 27.12.13.
  */
@@ -21,6 +23,7 @@ public class BlacklistDao extends SQLiteAssetHelper {
     private final Context context;
 
     //TODO: Test database roll-out when not enough space on device
+    @Inject
     public BlacklistDao(Context context) {
         super(context, name, null, version);
         this.context = context;
