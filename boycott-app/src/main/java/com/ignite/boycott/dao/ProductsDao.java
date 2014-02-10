@@ -22,6 +22,8 @@ public class ProductsDao extends SQLiteAssetHelper {
     //TODO: Test database roll-out when not enough space on device
     private ProductsDao(Context context) {
         super(context, name, null, version);
+
+        setForcedUpgrade(2);
         db = getReadableDatabase();
     }
 
