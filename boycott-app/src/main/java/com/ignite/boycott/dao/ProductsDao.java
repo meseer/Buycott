@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * Created by meseer on 27.12.13.
  */
 public class ProductsDao extends SQLiteAssetHelper {
-    private static final int version = 1;
+    private static final int version = 2;
     private static final String name = "makers";
     private static volatile ProductsDao productsDao;
     private final SQLiteDatabase db;
@@ -22,6 +22,8 @@ public class ProductsDao extends SQLiteAssetHelper {
     //TODO: Test database roll-out when not enough space on device
     private ProductsDao(Context context) {
         super(context, name, null, version);
+
+        setForcedUpgrade(2);
         db = getReadableDatabase();
     }
 
