@@ -104,8 +104,6 @@ dependencies {
     compile 'com.squareup.dagger:dagger-compiler:1.2.0'
 
     compile files('libs/CWAC-LoaderEx.jar')
-    compile project(':android-sqlite-asset-helper')
-    compile project(':zxing-android-integration')
     //TODO: Investigate how to make this work, see http://x.co/3XxAL
     //    compile module('commonsguy:cwac-loaderex:0.7.3') {
     //        artifact {
