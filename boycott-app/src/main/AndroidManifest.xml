@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ignite.boycott"
     android:versionCode="47"
-    android:versionName="1.0.47-alpha">
+    android:versionName="1.0.47-alpha" >
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -17,6 +17,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -31,8 +32,8 @@
         <activity
             android:name="com.ignite.boycott.ScanResultsActivity"
             android:label="@string/title_activity_scan_results"
-            android:windowSoftInputMode="adjustResize"
-            android:parentActivityName="com.ignite.boycott.MainActivity" >
+            android:parentActivityName="com.ignite.boycott.MainActivity"
+            android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
@@ -41,6 +42,12 @@
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="ac0a316a616e8e302410ac8567057c376d4cc9e3" />
+
+        <service
+            android:name="com.ignite.boycott.service.BlacklistUpdaterService"
+            android:enabled="true"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

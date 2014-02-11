@@ -15,6 +15,7 @@ import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 import com.ignite.boycott.dao.BlacklistDao;
+import com.ignite.boycott.loader.BlacklistLoader;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -70,6 +71,7 @@ public class MainActivity extends ActionBarActivity
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
 
+        new BlacklistLoader(getApplicationContext()).loadInBackground();
         mTitle = getTitle();
         mBlacklist = BlacklistDao.instance(this.getApplicationContext());
 
