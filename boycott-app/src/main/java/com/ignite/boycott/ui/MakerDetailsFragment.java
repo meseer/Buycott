@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Maker;
 
 

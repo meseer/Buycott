@@ -8,6 +8,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.dao.HistoryDao;
 
 /**

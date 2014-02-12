@@ -106,7 +106,6 @@ dependencies {
     compile 'com.google.zxing:android-integration:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.squareup.okhttp:okhttp:+'
-
     compile files('libs/CWAC-LoaderEx.jar')
 
     instrumentTestCompile 'com.squareup:fest-android:1.0.+'

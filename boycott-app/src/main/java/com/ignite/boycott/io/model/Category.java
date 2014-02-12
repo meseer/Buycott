@@ -1,5 +1,7 @@
 package com.ignite.boycott.io.model;
 
+import com.android.internal.util.Predicate;
+
 import java.util.Arrays;
 
 /**
@@ -22,7 +24,7 @@ public class Category {
         return Nodes;
     }
 
-    public Category filter(String filter) {
+    public Category filterMakers(Predicate<Maker> filter) {
         Category result = new Category();
         result.Title = Title;
         result.Index = Index;
@@ -30,18 +32,12 @@ public class Category {
         Maker[] filteredMakers = new Maker[Nodes.length];
         int i = 0;
         for (Maker m : Nodes) {
-            if (isFiltered(m, filter)) {
+            if (filter.apply(m)) {
                 filteredMakers[i] = m;
                 i++;
             }
         }
         result.Nodes = Arrays.copyOf(filteredMakers, i);
         return result;
-    }
-
-    private boolean isFiltered(Maker m, String filter) {
-        String f = filter.toUpperCase();
-        return m.getBrand().toUpperCase().contains(f)
-            || m.getOwner().toUpperCase().contains(f);
     }
 }

@@ -6,7 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.widget.SimpleAdapter;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.dao.model.Product;
+import com.ignite.boycott.dao.model.MakerFrequency;
 
 import java.util.ArrayList;
 import java.util.HashMap;

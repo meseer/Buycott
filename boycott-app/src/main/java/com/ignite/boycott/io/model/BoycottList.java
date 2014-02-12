@@ -1,5 +1,7 @@
 package com.ignite.boycott.io.model;
 
+import com.android.internal.util.Predicate;
+
 /**
 * Created by meseer on 12.02.14.
 */
@@ -10,14 +12,14 @@ public class BoycottList {
         return Data;
     }
 
-    public Maker getItem(int position) {
+    public Maker getMaker(int globalPosition) {
         int i = 0;
 
-        while (Data.getCategories()[i].getNodes().length <= position) {
-            position-=Data.getCategories()[i].getNodes().length;
+        while (Data.getCategories()[i].getNodes().length <= globalPosition) {
+            globalPosition-=Data.getCategories()[i].getNodes().length;
             i++;
         }
-        return Data.getCategories()[i].getNodes()[position];
+        return Data.getCategories()[i].getNodes()[globalPosition];
     }
 
     public int size() {
@@ -41,9 +43,16 @@ public class BoycottList {
         throw new RuntimeException("Maker not found in the list");
     }
 
-    public BoycottList filter(String mFilter) {
+    public BoycottList filterMakers(Predicate<Maker> mFilter) {
         BoycottList result = new BoycottList();
-        result.Data = Data.filter(mFilter);
+        result.Data = Data.filterMakers(mFilter);
         return result;
+    }
+
+    public Category getCategory(int position) {
+        if (position < Data.getCategories().length)
+            return Data.getCategories()[position];
+
+        throw new RuntimeException("Category index out of bounds");
     }
 }

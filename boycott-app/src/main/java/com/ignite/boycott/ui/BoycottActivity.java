@@ -14,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
+import com.ignite.boycott.BuildConfig;
+import com.ignite.boycott.R;
+import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
 
 import java.lang.InstantiationException;
@@ -23,7 +26,8 @@ import java.util.Map;
 public class BoycottActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         CatalogFragment.CatalogCallbacks,
-        HistoryFragment.HistoryCallbacks {
+        HistoryFragment.HistoryCallbacks,
+        CategoryFragment.OnFragmentInteractionListener {
 
     public enum Fragments {
         CATALOG(0, R.string.title_section2),
@@ -215,4 +219,23 @@ public class BoycottActivity extends ActionBarActivity
             startActivity(detailIntent);
         }
     }
+
+    @Override
+    public void onCategorySelected(Category item) {
+        CatalogFragment fragment = new CatalogFragment(item);
+
+        if (mTwoPane) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.maker_detail_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
+            detailIntent.putExtra(MakerDetailsFragment.MAKER, item);
+            startActivity(detailIntent);
+        }
+    }
+
 }

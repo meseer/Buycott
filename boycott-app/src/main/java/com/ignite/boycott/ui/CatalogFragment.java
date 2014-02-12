@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.adapter.BoycottListAdapter;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.io.model.Maker;
@@ -26,7 +27,7 @@ import com.ignite.boycott.loader.BlacklistLoader;
 public class CatalogFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<BoycottList>, SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    private static final String FILTER = "filter";
+    private static final String FILTER = "filterMakers";
     private BoycottListAdapter mAdapter;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
@@ -132,14 +133,14 @@ public class CatalogFragment extends ListFragment
     @Override
     public Loader<BoycottList> onCreateLoader(int i, Bundle bundle) {
         //singleton - doesn't work
-//        return BlacklistLoader.instance(getActivity().getApplicationContext());
-        return new BlacklistLoader(getActivity().getApplicationContext());
+        return BlacklistLoader.instance(getActivity().getApplicationContext());
+//        return new BlacklistLoader(getActivity().getApplicationContext());
     }
 
     @Override
     public void onLoadFinished(Loader<BoycottList> cursorLoader, BoycottList boycottList) {
         mBoycottList = boycottList;
-        mAdapter.swapBoycotList(boycottList);
+        mAdapter.swapBoycottList(boycottList);
 
         if (isResumed()) {
             setListShown(true);
@@ -150,7 +151,7 @@ public class CatalogFragment extends ListFragment
 
     @Override
     public void onLoaderReset(Loader<BoycottList> objectLoader) {
-        mAdapter.swapBoycotList(null);
+        mAdapter.swapBoycottList(null);
     }
 
     @Override
@@ -162,7 +163,7 @@ public class CatalogFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mCallbacks.onMakerSelected(mBoycottList.getItem(position));
+        mCallbacks.onMakerSelected(mBoycottList.getMaker(position));
     }
 
     /**

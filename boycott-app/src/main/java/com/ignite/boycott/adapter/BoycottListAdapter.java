@@ -42,12 +42,12 @@ public class BoycottListAdapter extends BaseAdapter {
         //use map position => item here
         BoycottList filteredList = getFilteredList();
         if (filteredList == null) return null;
-        return filteredList.getItem(position);
+        return filteredList.getMaker(position);
     }
 
     @Override
     public long getItemId(int position) {
-        Maker m = getFilteredList().getItem(position);
+        Maker m = getFilteredList().getMaker(position);
         return list.getPosition(m);
     }
 
@@ -56,7 +56,7 @@ public class BoycottListAdapter extends BaseAdapter {
             if (TextUtils.isEmpty(mFilter)) {
                 mFilteredList = list;
             } else {
-                mFilteredList = list.filter(mFilter);
+                mFilteredList = list.filterMakers(new MakerContainsPredicate(mFilter));
             }
         }
         return mFilteredList;
@@ -79,7 +79,7 @@ public class BoycottListAdapter extends BaseAdapter {
         return view;
     }
 
-    public BoycottList swapBoycotList(BoycottList newBoycottList) {
+    public BoycottList swapBoycottList(BoycottList newBoycottList) {
         if (newBoycottList == list)
             return null;
 
