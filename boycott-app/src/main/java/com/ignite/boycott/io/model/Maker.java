@@ -72,7 +72,6 @@ public class Maker implements Parcelable {
         this.Reason = in.readString();
         this.Alternative = in.readString();
         this.Location = in.createStringArray();
-        in.readStringArray(this.Location);
         this.URL = in.readString();
         this.LogoURL = in.readString();
     }
