@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.widget.SimpleAdapter;
 
-import com.ignite.boycott.dao.BlacklistDao;
 import com.ignite.boycott.dao.model.Product;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ public class ScanResultsFragment extends ListFragment {
     private String barcode;
     private SimpleAdapter mAdapter;
     private List<Map<String, String>> data;
-    private BlacklistDao blacklist;
 
     public ScanResultsFragment() {
         // Required empty public constructor
@@ -55,7 +53,8 @@ public class ScanResultsFragment extends ListFragment {
     private String findOwner(String maker) {
         //TODO: Do this in background (e.g. use Bolts)
         //TODO: get Owner list by Maker code, not by name, to include sub-contractors for known products
-        return blacklist.getOwner(maker);
+//        return blacklist.getOwner(maker);
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
@@ -84,7 +83,6 @@ public class ScanResultsFragment extends ListFragment {
         setRetainInstance(true);
         setEmptyText(getString(R.string.press_scan));
 
-        blacklist = BlacklistDao.instance(getActivity().getApplicationContext());
         data = extractData(getArguments());
         if (getArguments() != null) {
             barcode = getArguments().getString(ARG_BARCODE);

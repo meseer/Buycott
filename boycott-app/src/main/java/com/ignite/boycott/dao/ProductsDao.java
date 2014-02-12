@@ -3,6 +3,7 @@ package com.ignite.boycott.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import com.ignite.boycott.MakerFrequency;
 import com.ignite.boycott.dao.model.Product;
@@ -18,10 +19,12 @@ public class ProductsDao extends SQLiteAssetHelper {
     private static final String name = "makers";
     private static volatile ProductsDao productsDao;
     private final SQLiteDatabase db;
+    private final Context context;
 
     //TODO: Test database roll-out when not enough space on device
     private ProductsDao(Context context) {
         super(context, name, null, version);
+        this.context = context;
 
         setForcedUpgrade(2);
         db = getReadableDatabase();
@@ -29,7 +32,7 @@ public class ProductsDao extends SQLiteAssetHelper {
 
     public static ProductsDao instance(Context context) {
         if (productsDao == null) {
-            synchronized (BlacklistDao.class) {
+            synchronized (ProductsDao.class) {
                 if (productsDao == null)
                     productsDao = new ProductsDao(context);
             }

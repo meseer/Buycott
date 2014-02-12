@@ -2,6 +2,7 @@ package com.ignite.boycott.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,37 +10,56 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ignite.boycott.io.model.BoycottList;
-import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
 
 /**
  * Created by meseer on 12.02.14.
+ * This class is not thread safe!
  */
 public class BoycottListAdapter extends BaseAdapter {
     private BoycottList list;
     private LayoutInflater mInflater;
+    private String mFilter;
+    private BoycottList mFilteredList;
 
     public BoycottListAdapter(Context context, BoycottList list) {
         this.list = list;
         mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        mFilter = null;
+        mFilteredList = list;
     }
 
     @Override
     public int getCount() {
-        if (list == null) return 0;
-        return list.size();
+        BoycottList filteredList = getFilteredList();
+        if (filteredList == null) return 0;
+        return filteredList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (list == null) return null;
-        return list.getItem(position);
+        //use map position => item here
+        BoycottList filteredList = getFilteredList();
+        if (filteredList == null) return null;
+        return filteredList.getItem(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return position;
+        Maker m = getFilteredList().getItem(position);
+        return list.getPosition(m);
+    }
+
+    private BoycottList getFilteredList() {
+        if (list != null && mFilteredList == null) {
+            if (TextUtils.isEmpty(mFilter)) {
+                mFilteredList = list;
+            } else {
+                mFilteredList = list.filter(mFilter);
+            }
+        }
+        return mFilteredList;
     }
 
     @Override
@@ -72,5 +92,13 @@ public class BoycottListAdapter extends BaseAdapter {
             notifyDataSetInvalidated();
         }
         return oldBoycottList;
+    }
+
+    public void setFilter(String s) {
+        if (!TextUtils.equals(s, mFilter)) {
+            mFilter = s;
+            mFilteredList = null;
+            notifyDataSetChanged();
+        }
     }
 }

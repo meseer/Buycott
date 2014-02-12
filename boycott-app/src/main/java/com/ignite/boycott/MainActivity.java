@@ -14,8 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
-import com.ignite.boycott.dao.BlacklistDao;
-import com.ignite.boycott.dao.model.BlacklistedMaker;
 import com.ignite.boycott.io.model.Maker;
 
 import java.lang.InstantiationException;
@@ -57,7 +55,6 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
     private Map<String, Class<? extends Fragment>> drawerFragmentClassMap;
     private Map<String, Fragment> drawerFragmentMap = new HashMap<>();
-    private BlacklistDao mBlacklist;
     private boolean mTwoPane;
 
     @Override
@@ -73,7 +70,6 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
         mTitle = getTitle();
-        mBlacklist = BlacklistDao.instance(this.getApplicationContext());
 
         // Set up the drawer.
         mNavigationDrawerFragment = (NavigationDrawerFragment)

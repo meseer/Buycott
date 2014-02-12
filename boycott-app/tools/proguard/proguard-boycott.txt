@@ -32,7 +32,7 @@
 -keep public class * extends android.support.v4.app.Fragment
 -keep public class * extends android.app.Fragment
 -keep public class com.android.vending.licensing.ILicensingService
-# -keep public class android.support.v7.widget.SearchView
+-keep public class android.support.v7.widget.SearchView
 
 # For native methods, see http://proguard.sourceforge.net/manual/examples.html#native
 -keepclasseswithmembernames class * {
@@ -102,6 +102,9 @@
 # Make sure that Google Analytics doesn't get removed
 -keep class com.google.analytics.tracking.android.CampaignTrackingReceiver
 
--dontwarn com.commonsware.cwac.loaderex.*
--dontwarn com.commonsware.cwac.loaderex.acl.*
+# OkHttp
+-keep class com.squareup.okhttp.** { *; }
+-dontwarn com.squareup.okhttp.**
+
+-dontwarn com.commonsware.cwac.loaderex.**
 -keepattributes SourceFile,LineNumberTable

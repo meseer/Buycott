@@ -27,7 +27,7 @@ public class HistoryDao extends SQLiteAssetHelper {
 
     public static HistoryDao instance(Context context) {
         if (historyDao == null) {
-            synchronized (BlacklistDao.class) {
+            synchronized (HistoryDao.class) {
                 if (historyDao == null)
                     historyDao = new HistoryDao(context);
             }

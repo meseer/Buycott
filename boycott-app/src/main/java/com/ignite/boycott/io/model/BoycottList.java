@@ -28,4 +28,22 @@ public class BoycottList {
 
         return count;
     }
+
+    public long getPosition(Maker maker) {
+        //TODO: Save position in the maker itself
+        int position = 0;
+        for (Category c : Data.getCategories()) {
+            for (Maker m : c.getNodes()) {
+                if (m == maker) return position;
+                position++;
+            }
+        }
+        throw new RuntimeException("Maker not found in the list");
+    }
+
+    public BoycottList filter(String mFilter) {
+        BoycottList result = new BoycottList();
+        result.Data = Data.filter(mFilter);
+        return result;
+    }
 }

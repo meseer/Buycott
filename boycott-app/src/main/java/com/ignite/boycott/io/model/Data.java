@@ -14,4 +14,13 @@ public class Data {
     public Category[] getCategories() {
         return Categories;
     }
+
+    public Data filter(String filter) {
+        Data result = new Data();
+        result.Categories = new Category[Categories.length];
+        for (int i = 0; i < Categories.length; i++)
+            result.Categories[i] = Categories[i].filter(filter);
+
+        return result;
+    }
 }

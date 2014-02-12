@@ -6,7 +6,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -89,7 +88,7 @@ public class CatalogFragment extends ListFragment
     @Override
     public boolean onQueryTextChange(String s) {
         mFilter = s;
-        getLoaderManager().restartLoader(0, null, CatalogFragment.this);
+        mAdapter.setFilter(s);
         return true;
     }
 
@@ -111,6 +110,7 @@ public class CatalogFragment extends ListFragment
         this.setRetainInstance(true);
 
         mAdapter = new BoycottListAdapter(getActivity().getApplicationContext(), null);
+        mAdapter.setFilter(mFilter);
 
         setListAdapter(mAdapter);
         setListShown(false);
@@ -131,6 +131,8 @@ public class CatalogFragment extends ListFragment
 
     @Override
     public Loader<BoycottList> onCreateLoader(int i, Bundle bundle) {
+        //singleton - doesn't work
+//        return BlacklistLoader.instance(getActivity().getApplicationContext());
         return new BlacklistLoader(getActivity().getApplicationContext());
     }
 
