@@ -116,6 +116,7 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
                 return new ByteArrayInputStream(baos.toByteArray());
             } finally {
                 baos.close();
+                zis.close();
             }
         }
         throw new RuntimeException("Downloaded ZIP is empty");
