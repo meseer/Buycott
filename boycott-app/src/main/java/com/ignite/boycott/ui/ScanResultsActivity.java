@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.content.Intent;
 import android.support.v4.app.NavUtils;
@@ -146,7 +146,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, BoycottActivity.class));
             return true;
         }
 

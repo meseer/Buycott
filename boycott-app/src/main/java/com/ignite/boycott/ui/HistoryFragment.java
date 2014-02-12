@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -29,7 +29,7 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
                     + " must implement HistoryCallbacks");
         }
 
-        ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.HISTORY);
+        ((BoycottActivity) activity).onSectionAttached(BoycottActivity.Fragments.HISTORY);
     }
 
     @Override

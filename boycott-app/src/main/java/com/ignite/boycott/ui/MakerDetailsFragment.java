@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -16,7 +16,7 @@ import com.ignite.boycott.io.model.Maker;
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.ignite.boycott.MakerDetailsFragment.MakerDetailsCallback} interface
+ * {@link MakerDetailsFragment.MakerDetailsCallback} interface
  * to handle interaction events.
  * Use the {@link MakerDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.

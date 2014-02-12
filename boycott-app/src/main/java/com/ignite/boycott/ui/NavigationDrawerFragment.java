@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,7 +22,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.ignite.boycott.R;
 
 /**
@@ -57,7 +56,7 @@ public class NavigationDrawerFragment extends Fragment {
     private ListView mDrawerListView;
     private View mFragmentContainerView;
 
-    private MainActivity.Fragments mCurrentSelectedPosition = MainActivity.Fragments.CATALOG;
+    private BoycottActivity.Fragments mCurrentSelectedPosition = BoycottActivity.Fragments.CATALOG;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -74,7 +73,7 @@ public class NavigationDrawerFragment extends Fragment {
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         if (savedInstanceState != null) {
-            mCurrentSelectedPosition = MainActivity.Fragments.valueOf(
+            mCurrentSelectedPosition = BoycottActivity.Fragments.valueOf(
                     savedInstanceState.getInt(STATE_SELECTED_POSITION));
             mFromSavedInstanceState = true;
         }
@@ -98,7 +97,7 @@ public class NavigationDrawerFragment extends Fragment {
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(MainActivity.Fragments.valueOf(position));
+                selectItem(BoycottActivity.Fragments.valueOf(position));
             }
         });
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
@@ -195,7 +194,7 @@ public class NavigationDrawerFragment extends Fragment {
         return ((ActionBarActivity)getActivity()).getSupportActionBar();
     }
 
-    public void selectItem(MainActivity.Fragments position) {
+    public void selectItem(BoycottActivity.Fragments position) {
         mCurrentSelectedPosition = position;
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position.n, true);
@@ -282,6 +281,6 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(MainActivity.Fragments position);
+        void onNavigationDrawerItemSelected(BoycottActivity.Fragments position);
     }
 }

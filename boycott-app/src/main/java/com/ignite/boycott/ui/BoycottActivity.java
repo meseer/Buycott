@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -20,7 +20,7 @@ import java.lang.InstantiationException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends ActionBarActivity
+public class BoycottActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         CatalogFragment.CatalogCallbacks,
         HistoryFragment.HistoryCallbacks {
@@ -150,7 +150,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     private String fragmentTag(Fragments position) {
-        return MainActivity.class.getName() + "." + position;
+        return BoycottActivity.class.getName() + "." + position;
     }
 
     private<T> T newInstance(Class<? extends T> aClass) {

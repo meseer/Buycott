@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -62,7 +62,7 @@ public class CatalogFragment extends ListFragment
         mCallbacks = (CatalogCallbacks) activity;
         setHasOptionsMenu(true);
 
-        ((MainActivity) activity).onSectionAttached(MainActivity.Fragments.CATALOG);
+        ((BoycottActivity) activity).onSectionAttached(BoycottActivity.Fragments.CATALOG);
     }
 
     @Override

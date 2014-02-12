@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:boycott="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.ignite.boycott.ScanResultsActivity" >
+    tools:context="com.ignite.boycott.ui.ScanResultsActivity" >
 
     <item android:id="@+id/action_scan"
           android:title="@string/action_scan"

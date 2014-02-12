@@ -3,9 +3,8 @@ package com.ignite.boycott.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.widget.Toast;
 
-import com.ignite.boycott.MakerFrequency;
+import com.ignite.boycott.ui.MakerFrequency;
 import com.ignite.boycott.dao.model.Product;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 

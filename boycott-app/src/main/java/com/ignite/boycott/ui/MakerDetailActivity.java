@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.ui;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,7 +11,7 @@ import android.view.MenuItem;
  * An activity representing a single Item detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link com.ignite.boycott.CatalogFragment}.
+ * in a {@link CatalogFragment}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link MakerDetailsFragment}.
@@ -59,7 +59,7 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, BoycottActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
