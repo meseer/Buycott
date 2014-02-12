@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.ignite.boycott.MakerFrequency;
-import com.ignite.boycott.Product;
+import com.ignite.boycott.dao.model.Product;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;

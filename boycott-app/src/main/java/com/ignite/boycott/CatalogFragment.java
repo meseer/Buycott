@@ -1,7 +1,6 @@
 package com.ignite.boycott;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -17,20 +16,24 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.ignite.boycott.dao.BlacklistDao;
+import com.ignite.boycott.adapter.BoycottListAdapter;
+import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.io.model.Maker;
+import com.ignite.boycott.loader.BlacklistLoader;
 
 /**
  * Created by mdelegan on 08.01.14.
  */
 public class CatalogFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<Cursor>, SearchView.OnQueryTextListener {
+        implements LoaderManager.LoaderCallbacks<BoycottList>, SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private static final String FILTER = "filter";
-    private SimpleCursorAdapter mAdapter;
+    private BoycottListAdapter mAdapter;
     private CatalogCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private String mFilter;
     private SearchView mSearchView;
+    private BoycottList mBoycottList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -107,8 +110,7 @@ public class CatalogFragment extends ListFragment
 
         this.setRetainInstance(true);
 
-        mAdapter = new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_2, null,
-                new String[] { "Maker", "Owner"}, new int[] { android.R.id.text1, android.R.id.text2 } , 0);
+        mAdapter = new BoycottListAdapter(getActivity().getApplicationContext(), null);
 
         setListAdapter(mAdapter);
         setListShown(false);
@@ -128,13 +130,14 @@ public class CatalogFragment extends ListFragment
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return BlacklistDao.newHistoryLoader(getActivity().getApplicationContext(), mFilter);
+    public Loader<BoycottList> onCreateLoader(int i, Bundle bundle) {
+        return new BlacklistLoader(getActivity().getApplicationContext());
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
+    public void onLoadFinished(Loader<BoycottList> cursorLoader, BoycottList boycottList) {
+        mBoycottList = boycottList;
+        mAdapter.swapBoycotList(boycottList);
 
         if (isResumed()) {
             setListShown(true);
@@ -144,8 +147,8 @@ public class CatalogFragment extends ListFragment
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> objectLoader) {
-        mAdapter.swapCursor(null);
+    public void onLoaderReset(Loader<BoycottList> objectLoader) {
+        mAdapter.swapBoycotList(null);
     }
 
     @Override
@@ -157,7 +160,7 @@ public class CatalogFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mCallbacks.onMakerSelected(id);
+        mCallbacks.onMakerSelected(mBoycottList.getItem(position));
     }
 
     /**
@@ -183,6 +186,6 @@ public class CatalogFragment extends ListFragment
     }
 
     public interface CatalogCallbacks {
-        public void onMakerSelected(long blacklistId);
+        public void onMakerSelected(Maker maker);
     }
 }

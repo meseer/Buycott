@@ -3,11 +3,10 @@ package com.ignite.boycott.dao;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.ignite.boycott.HistoryEntry;
+import com.ignite.boycott.dao.model.HistoryEntry;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 /**

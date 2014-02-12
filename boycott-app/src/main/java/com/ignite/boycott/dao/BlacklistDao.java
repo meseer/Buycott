@@ -8,7 +8,7 @@ import android.support.v4.content.Loader;
 import android.text.TextUtils;
 
 import com.commonsware.cwac.loaderex.acl.SQLiteCursorLoader;
-import com.ignite.boycott.BlacklistedMaker;
+import com.ignite.boycott.dao.model.BlacklistedMaker;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 /**

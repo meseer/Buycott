@@ -13,6 +13,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ignite.boycott.dao.HistoryDao;
 import com.ignite.boycott.dao.ProductsDao;
+import com.ignite.boycott.dao.model.HistoryEntry;
+import com.ignite.boycott.dao.model.Product;
 import com.ignite.boycott.reporting.Reporting;
 import com.ignite.boycott.reporting.crashlytics.CrashlyticsReporting;
 

@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ignite.boycott.dao.model.BlacklistedMaker;
+import com.ignite.boycott.io.model.Maker;
+
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -24,7 +27,7 @@ import android.widget.TextView;
 public class MakerDetailsFragment extends Fragment {
     public static final String MAKER = "Maker";
 
-    private BlacklistedMaker maker;
+    private Maker maker;
 
     private MakerDetailsCallback mListener;
 
@@ -36,7 +39,7 @@ public class MakerDetailsFragment extends Fragment {
      * @return A new instance of fragment MakerDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MakerDetailsFragment newInstance(BlacklistedMaker maker) {
+    public static MakerDetailsFragment newInstance(Maker maker) {
         MakerDetailsFragment fragment = new MakerDetailsFragment();
         Bundle args = new Bundle();
         args.putParcelable(MAKER, maker);
@@ -52,7 +55,7 @@ public class MakerDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            maker = (BlacklistedMaker) getArguments().getParcelable(MAKER);
+            maker = (Maker) getArguments().getParcelable(MAKER);
         }
     }
 
@@ -61,15 +64,15 @@ public class MakerDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_maker_details, container, false);
-        ((TextView) view.findViewById(R.id.makerName)).setText(maker.maker);
-        ((TextView) view.findViewById(R.id.ownerName)).setText(maker.owner);
-        ((TextView) view.findViewById(R.id.typeName)).setText(maker.type);
-        ((TextView) view.findViewById(R.id.affiliationName)).setText(maker.affiliation);
-        if (TextUtils.isEmpty(maker.alternative)) {
+        ((TextView) view.findViewById(R.id.makerName)).setText(maker.getBrand());
+        ((TextView) view.findViewById(R.id.ownerName)).setText(maker.getOwner());
+        ((TextView) view.findViewById(R.id.typeName)).setText("TYPE?");
+        ((TextView) view.findViewById(R.id.affiliationName)).setText(maker.getDescription());
+        if (TextUtils.isEmpty(maker.getAlternative())) {
             //TODO: hide label or whole row
 //            ((TextView)view.findViewById(R.id.alternativeLabel)).setTex
         } else {
-            ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.alternative);
+            ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.getAlternative());
         }
         return view;
     }

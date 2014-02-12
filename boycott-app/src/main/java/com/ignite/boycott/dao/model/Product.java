@@ -1,4 +1,4 @@
-package com.ignite.boycott;
+package com.ignite.boycott.dao.model;
 
 import android.database.Cursor;
 import android.os.Parcel;

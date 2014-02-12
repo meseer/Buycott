@@ -7,6 +7,7 @@ import android.support.v4.app.ListFragment;
 import android.widget.SimpleAdapter;
 
 import com.ignite.boycott.dao.BlacklistDao;
+import com.ignite.boycott.dao.model.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;

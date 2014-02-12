@@ -15,7 +15,8 @@ import android.view.MenuItem;
 
 import com.crashlytics.android.Crashlytics;
 import com.ignite.boycott.dao.BlacklistDao;
-import com.ignite.boycott.loader.BlacklistLoader;
+import com.ignite.boycott.dao.model.BlacklistedMaker;
+import com.ignite.boycott.io.model.Maker;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -71,7 +72,6 @@ public class MainActivity extends ActionBarActivity
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
 
-        new BlacklistLoader(getApplicationContext()).loadInBackground();
         mTitle = getTitle();
         mBlacklist = BlacklistDao.instance(this.getApplicationContext());
 
@@ -202,9 +202,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onMakerSelected(long blacklistId) {
-        //TODO: Offload this to background thread
-        BlacklistedMaker maker = mBlacklist.getBlacklistedMaker(blacklistId);
+    public void onMakerSelected(Maker maker) {
         MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
         if (mTwoPane) {
             // In two-pane mode, show the detail view in this activity by
