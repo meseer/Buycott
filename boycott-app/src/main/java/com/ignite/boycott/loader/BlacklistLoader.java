@@ -5,6 +5,7 @@ import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.ignite.boycott.io.model.BoycottList;
 import com.squareup.okhttp.OkHttpClient;
@@ -22,13 +23,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static com.ignite.boycott.util.StreamUtils.safeClose;
+
 /**
  * Created by mdelegan on 10.02.14.
  */
 public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<BoycottList> {
-    public static final String BOYCOTT_LIST_URL = "https://script.google.com/macros/s/AKfycbxWbLBL6_7FJkb5fPj6PdyE45EoOCwgFVaAH6H0QmMcgiP8EVo6/exec?json=type3&zip=1";
+    public static final URL BOYCOTT_LIST_URL;
     private OkHttpClient client;
     private BoycottList mBoycottList;
+
+    static {
+        try {
+            BOYCOTT_LIST_URL = new URL("https://script.google.com/macros/s/AKfycbxWbLBL6_7FJkb5fPj6PdyE45EoOCwgFVaAH6H0QmMcgiP8EVo6/exec?json=type3&zip=1");
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public BlacklistLoader(Context context) {
         super(context);
@@ -70,30 +81,31 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
 
     //Use RoboSpice or BoltsFramework or Ion etc.
     public BoycottList loadInBackground() {
+        InputStream jsonStream = null;
         try {
-            HttpURLConnection con = client.open(new URL(BOYCOTT_LIST_URL));
-
-            InputStream cis = null;
-            Base64InputStream bis = null;
-            try {
-                cis = con.getInputStream();
-                bis = new Base64InputStream(cis, Base64.DEFAULT);
-                InputStream jsonStream = getFirstZipEntryAsStream(new ZipInputStream(bis));
-                try {
-                    return parseBlacklistJson(jsonStream);
-                } finally {
-                    if (jsonStream != null) jsonStream.close();
-                }
-            } finally {
-                if (bis != null) bis.close();
-                if (cis != null) cis.close();
-                con.disconnect();
-            }
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
+            jsonStream = openJsonStreamFromUrl(BOYCOTT_LIST_URL);
+            return parseBlacklistJson(jsonStream);
         } catch (IOException e) {
-            //TODO: Retry
+            Crashlytics.logException(e);
             throw new RuntimeException(e);
+        } finally {
+            safeClose(jsonStream);
+        }
+    }
+
+    private InputStream openJsonStreamFromUrl(URL boycottListUrl) throws IOException {
+        HttpURLConnection con = client.open(boycottListUrl);
+
+        InputStream cis = null;
+        Base64InputStream bis = null;
+        try {
+            cis = con.getInputStream();
+            bis = new Base64InputStream(cis, Base64.DEFAULT);
+            return getFirstZipEntryAsStream(new ZipInputStream(bis));
+        } finally {
+            safeClose(bis);
+            safeClose(cis);
+            con.disconnect();
         }
     }
 
@@ -107,34 +119,27 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
         ZipEntry ze = zis.getNextEntry();
         if (ze != null) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            try {
-                byte[] buffer = new byte[1024];
-                int count;
-                while ((count = zis.read(buffer)) != -1) {
-                    baos.write(buffer, 0, count);
-                }
-                return new ByteArrayInputStream(baos.toByteArray());
-            } finally {
-                baos.close();
-                zis.close();
+        try {
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = zis.read(buffer)) != -1) {
+                baos.write(buffer, 0, count);
             }
+            return new ByteArrayInputStream(baos.toByteArray());
+        } finally {
+            safeClose(baos);
+            safeClose(zis);
         }
+    }
         throw new RuntimeException("Downloaded ZIP is empty");
     }
 
     public BoycottList parseBlacklistJson(InputStream stream) {
-        Gson gson = new Gson();
         InputStreamReader is = new InputStreamReader(stream, Charset.forName("UTF-8"));
         try {
-            BoycottList boycottList = gson.fromJson(is, BoycottList.class);
-            return boycottList;
+            return new Gson().fromJson(is, BoycottList.class);
         } finally {
-            try {
-                is.close();
-                stream.close();
-            } catch (IOException e) {
-                Log.w("Failed to close InputStreamReader", e);
-            }
+            safeClose(is);
         }
     }
 }
