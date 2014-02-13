@@ -47,6 +47,11 @@ public class MakerListFragment extends ListFragment implements SearchView.OnQuer
         if (savedInstanceState != null) {
             mFilter = savedInstanceState.getString(FILTER);
             mCategory = savedInstanceState.getParcelable(CATEGORY);
+        } else {
+            if (getArguments() != null) {
+                mCategory = getArguments().getParcelable(CATEGORY);
+                mFilter = getArguments().getString(FILTER);
+            }
         }
     }
 
