@@ -2,12 +2,14 @@ package com.ignite.boycott.loader;
 
 import android.content.Context;
 import android.support.v4.content.Loader;
+import android.support.v7.appcompat.R;
 import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.util.StreamUtils;
 import com.squareup.okhttp.OkHttpClient;
@@ -25,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -47,6 +50,7 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
     private final Context mContext;
     private OkHttpClient client;
     private BoycottList mBoycottList;
+    //TODO: Use FileObserver to monitor list updates
 
     static {
         try {
@@ -99,13 +103,27 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
         }
     }
 
-    //Use RoboSpice or BoltsFramework or Ion etc.
     public BoycottList loadInBackground() {
         InputStream jsonStream = null;
         try {
 //            jsonStream = openJsonStreamFromUrl(BOYCOTT_LIST_URL);
-            jsonStream = openJsonStreamFromFile(openOrCopyLocalBoycottList());
-            return parseBlacklistJson(jsonStream);
+            File jsonFile = openOrCopyLocalBoycottList();
+            try {
+                jsonStream = openJsonStreamFromFile(jsonFile);
+                return parseBlacklistJson(jsonStream);
+            } catch (JsonSyntaxException e) {
+                Log.e(TAG, "Malformed JSON file, deleting...", e);
+                String absolutePath = jsonFile.getAbsolutePath();
+                boolean isDeleted = jsonFile.delete();
+                if (isDeleted) {
+                    Log.i(TAG, "Succesfully deleted file " + absolutePath);
+                }
+                else {
+                    Log.e(TAG, "Unable to delete file " + absolutePath);
+                }
+                // return empty list for the time being
+                return null;
+            }
         } catch (Exception e) {
             Crashlytics.logException(e);
             throw new RuntimeException(e);
@@ -137,7 +155,13 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
         try {
             File f = new File(mJsonPath + "/");
             if (!f.exists()) { f.mkdir(); }
-            StreamUtils.copy(is, new FileOutputStream(dest));
+            FileOutputStream os = new FileOutputStream(dest);
+            try {
+                StreamUtils.copy(is, os);
+            } finally {
+                safeClose(os);
+                safeClose(is);
+            }
 
             Log.w(TAG, "boycott list copyFromAssets complete");
             return new File(dest);
@@ -195,7 +219,7 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
         throw new RuntimeException("Downloaded ZIP is empty");
     }
 
-    public BoycottList parseBlacklistJson(InputStream stream) {
+    public BoycottList parseBlacklistJson(InputStream stream) throws JsonSyntaxException {
         InputStreamReader is = new InputStreamReader(stream, Charset.forName("UTF-8"));
         try {
             return new Gson().fromJson(is, BoycottList.class);

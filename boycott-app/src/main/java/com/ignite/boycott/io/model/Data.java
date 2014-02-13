@@ -20,8 +20,9 @@ public class Data {
     public Data filterMakers(Predicate<Maker> filter) {
         Data result = new Data();
         result.Categories = new Category[Categories.length];
-        for (int i = 0; i < Categories.length; i++)
+        for (int i = 0; i < Categories.length; i++) {
             result.Categories[i] = Categories[i].filterMakers(filter);
+        }
 
         return result;
     }

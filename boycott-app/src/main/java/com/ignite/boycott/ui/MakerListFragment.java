@@ -18,22 +18,32 @@ import android.widget.Toast;
 import com.ignite.boycott.R;
 import com.ignite.boycott.adapter.BoycottListAdapter;
 import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
 import com.ignite.boycott.loader.BlacklistLoader;
 
 /**
  * Created by mdelegan on 08.01.14.
  */
-public class CatalogFragment extends ListFragment
+public class MakerListFragment extends ListFragment
         implements LoaderManager.LoaderCallbacks<BoycottList>, SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private static final String FILTER = "filterMakers";
+    public static final String CATALOG = "CATALOG";
     private BoycottListAdapter mAdapter;
-    private CatalogCallbacks mCallbacks;
+    private MakerListCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private String mFilter;
     private SearchView mSearchView;
     private BoycottList mBoycottList;
+
+    public static MakerListFragment newInstance(Category category) {
+        MakerListFragment fragment = new MakerListFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(CATALOG, category);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,14 +66,17 @@ public class CatalogFragment extends ListFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (!(activity instanceof CatalogCallbacks)) {
+        if (!(activity instanceof MakerListCallbacks)) {
             throw new ClassCastException(activity.toString()
-                    + " must implement MakerDetailsCallback");
+                    + " must implement MakerListCallbacks");
         }
-        mCallbacks = (CatalogCallbacks) activity;
+        mCallbacks = (MakerListCallbacks) activity;
         setHasOptionsMenu(true);
 
-        ((BoycottActivity) activity).onSectionAttached(BoycottActivity.Fragments.CATALOG);
+        //dirty hack
+        //get parent won't work on tablet devices where all 3 fragment will be in single activity
+        //FIXME propagate message to root activity
+//        ((BoycottActivity) activity.getParent()).onSectionAttached(BoycottActivity.Fragments.CATALOG);
     }
 
     @Override
@@ -188,7 +201,7 @@ public class CatalogFragment extends ListFragment
         mActivatedPosition = position;
     }
 
-    public interface CatalogCallbacks {
+    public interface MakerListCallbacks {
         public void onMakerSelected(Maker maker);
     }
 }

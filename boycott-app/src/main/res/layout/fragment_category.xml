@@ -1,9 +1,10 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/category_container"
-    tools:context="com.ignite.boycott.ui.CategoryFragment">
-
-
-</FrameLayout>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/category_list"
+          android:name="com.ignite.boycott.ui.CategoryFragment"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginLeft="16dp"
+          android:layout_marginRight="16dp"
+          tools:context="com.ignite.boycott.ui.BoycottActivity"
+          tools:layout="@android:layout/list_content" />

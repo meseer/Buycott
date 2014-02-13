@@ -17,7 +17,6 @@ import com.crashlytics.android.Crashlytics;
 import com.ignite.boycott.BuildConfig;
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Category;
-import com.ignite.boycott.io.model.Maker;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -25,10 +24,9 @@ import java.util.Map;
 
 public class BoycottActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
-        CatalogFragment.CatalogCallbacks,
         HistoryFragment.HistoryCallbacks,
+//        MakerListFragment.MakerListCallbacks,
         CategoryFragment.OnFragmentInteractionListener {
-
     public enum Fragments {
         CATALOG(0, R.string.title_section2),
         HISTORY(1, R.string.title_section3);
@@ -107,7 +105,7 @@ public class BoycottActivity extends ActionBarActivity
 
     private void setUpNavigationDrawerElements() {
         drawerFragmentClassMap = new HashMap<>();
-        drawerFragmentClassMap.put(fragmentTag(Fragments.CATALOG), CatalogFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(Fragments.CATALOG), CategoryFragment.class);
         drawerFragmentClassMap.put(fragmentTag(Fragments.HISTORY), HistoryFragment.class);
     }
 
@@ -143,13 +141,13 @@ public class BoycottActivity extends ActionBarActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
-            ((CatalogFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.item_list))
+            ((CategoryFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.category_list))
                     .setActivateOnItemClick(true);
         }
 
         fragmentManager.beginTransaction()
-                .replace(R.id.container, fragment, fragmentTag)
+                .replace(R.id.scan_results_container, fragment, fragmentTag)
                 .commit();
     }
 
@@ -202,38 +200,19 @@ public class BoycottActivity extends ActionBarActivity
     }
 
     @Override
-    public void onMakerSelected(Maker maker) {
-        MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.maker_detail_container, fragment)
-                    .commit();
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
-            detailIntent.putExtra(MakerDetailsFragment.MAKER, maker);
-            startActivity(detailIntent);
-        }
-    }
-
-    @Override
     public void onCategorySelected(Category item) {
-        CatalogFragment fragment = new CatalogFragment(item);
+        MakerListFragment fragment = MakerListFragment.newInstance(item);
 
         if (mTwoPane) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.maker_detail_container, fragment)
+                    .replace(R.id.maker_list_container, fragment)
                     .addToBackStack(null)
                     .commit();
         } else {
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
-            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
-            detailIntent.putExtra(MakerDetailsFragment.MAKER, item);
+            Intent detailIntent = new Intent(this, MakerListActivity.class);
+            detailIntent.putExtra(CategoryFragment.CATEGORY, item);
             startActivity(detailIntent);
         }
     }

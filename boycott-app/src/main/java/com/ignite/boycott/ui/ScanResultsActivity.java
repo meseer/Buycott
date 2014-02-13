@@ -86,7 +86,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         }
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.container, createFragment())
+                .add(R.id.scan_results_container, createFragment())
                 .commit();
     }
 

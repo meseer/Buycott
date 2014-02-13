@@ -22,12 +22,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MakerDetailActivity"
-            android:label="@string/title_maker_detail"
+            android:name=".ui.MakerListActivity"
             android:parentActivityName=".ui.BoycottActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ignite.boycott.MainActivity" />
+                android:value="com.ignite.boycott.ui.BoycottActivity" />
+        </activity>
+        <activity
+            android:name=".ui.MakerDetailActivity"
+            android:label="@string/title_maker_detail"
+            android:parentActivityName=".ui.MakerListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ignite.boycott.ui.BoycottActivity" />
         </activity>
         <activity
             android:name=".ui.ScanResultsActivity"
@@ -36,7 +43,7 @@
             android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="MainActivity" />
+                android:value="com.ignite.boycott.ui.BoycottActivity" />
         </activity>
 
         <meta-data

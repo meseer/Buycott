@@ -1,13 +1,13 @@
 package com.ignite.boycott.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 
 import com.ignite.boycott.R;
+import com.ignite.boycott.io.model.Maker;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -16,14 +16,14 @@ import com.ignite.boycott.R;
  * in a {@link MakerListFragment}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link MakerDetailsFragment}.
+ * more than a {@link com.ignite.boycott.ui.MakerDetailsFragment}.
  */
-public class MakerDetailActivity extends ActionBarActivity implements MakerDetailsFragment.MakerDetailsCallback {
+public class MakerListActivity extends ActionBarActivity implements MakerListFragment.MakerListCallbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maker_detail);
+        setContentView(R.layout.activity_maker_list);
 
         // Show the Up button in the action bar.
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -41,11 +41,11 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putParcelable(MakerDetailsFragment.MAKER, getIntent().getParcelableExtra(MakerDetailsFragment.MAKER));
-            MakerDetailsFragment fragment = new MakerDetailsFragment();
+            arguments.putParcelable(MakerListFragment.CATALOG, getIntent().getParcelableExtra(MakerListFragment.CATALOG));
+            MakerListFragment fragment = new MakerListFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.maker_detail_container, fragment)
+                    .add(R.id.maker_list_container, fragment)
                     .commit();
         }
     }
@@ -68,7 +68,21 @@ public class MakerDetailActivity extends ActionBarActivity implements MakerDetai
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-
+    public void onMakerSelected(Maker maker) {
+        MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
+        if (false/*mTwoPane*/) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.maker_detail_container, fragment)
+                    .commit();
+        } else {
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
+            detailIntent.putExtra(MakerDetailsFragment.MAKER, maker);
+            startActivity(detailIntent);
+        }
     }
 }

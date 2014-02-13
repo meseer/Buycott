@@ -27,8 +27,8 @@
     -->
 
     <fragment
-        android:id="@+id/item_list"
-        android:name="com.ignite.boycott.ui.CatalogFragment"
+        android:id="@+id/category_list"
+        android:name="com.ignite.boycott.ui.CategoryFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

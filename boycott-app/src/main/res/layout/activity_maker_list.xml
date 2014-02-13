@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scan_results_container"
+    android:id="@+id/maker_list_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ignite.boycott.ui.ScanResultsActivity"
+    tools:context="com.ignite.boycott.ui.MakerListActivity"
     tools:ignore="MergeRootFrame" />

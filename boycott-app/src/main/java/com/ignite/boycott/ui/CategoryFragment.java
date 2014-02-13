@@ -5,14 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.ignite.boycott.R;
 import com.ignite.boycott.adapter.BoycottCategoryAdapter;
-import com.ignite.boycott.adapter.BoycottListAdapter;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.loader.BlacklistLoader;
@@ -23,14 +20,13 @@ import com.ignite.boycott.loader.BlacklistLoader;
  * Activities that contain this fragment must implement the
  * {@link CategoryFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link CategoryFragment#newInstance} factory method to
- * create an instance of this fragment.
  *
  */
 public class CategoryFragment extends ListFragment implements LoaderManager.LoaderCallbacks<BoycottList> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    public static final String CATEGORY = "CATEGORY";
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
     private OnFragmentInteractionListener mListener;
@@ -45,13 +41,6 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
             // Serialize and persist the activated item position.
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_category, container, false);
     }
 
     @Override
@@ -97,6 +86,8 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        ((BoycottActivity) activity).onSectionAttached(BoycottActivity.Fragments.CATALOG);
     }
 
     @Override
@@ -133,6 +124,18 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<BoycottList> objectLoader) {
         mAdapter.swapBoycottList(null);
+    }
+
+    /**
+     * Turns on activate-on-click mode. When this mode is on, list items will be
+     * given the 'activated' state when touched.
+     */
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically
+        // give items the 'activated' state when touched.
+        getListView().setChoiceMode(activateOnItemClick
+                ? ListView.CHOICE_MODE_SINGLE
+                : ListView.CHOICE_MODE_NONE);
     }
 
     /**
