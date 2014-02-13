@@ -21,8 +21,7 @@ import com.ignite.boycott.io.model.Maker;
 /**
  * Created by mdelegan on 08.01.14.
  */
-public class MakerListFragment extends ListFragment
-        implements SearchView.OnQueryTextListener {
+public class MakerListFragment extends ListFragment implements SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private static final String FILTER = "filterMakers";
     public static final String CATEGORY = "CATEGORY";
@@ -125,7 +124,6 @@ public class MakerListFragment extends ListFragment
         mAdapter.setFilter(mFilter);
 
         setListAdapter(mAdapter);
-        setListShown(false);
     }
 
     @Override
