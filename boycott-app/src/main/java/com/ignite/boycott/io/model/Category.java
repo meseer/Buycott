@@ -77,4 +77,19 @@ public class Category implements Parcelable {
             return new Category[size];
         }
     };
+
+    public Maker getMaker(int position) {
+        return Nodes[position];
+    }
+
+    public long getPosition(Maker m) {
+        for (int i = 0; i < Nodes.length; i++) {
+            if (Nodes[i] == m) return i;
+        }
+        throw new RuntimeException("Maker not found in the list");
+    }
+
+    public int size() {
+        return Nodes.length;
+    }
 }

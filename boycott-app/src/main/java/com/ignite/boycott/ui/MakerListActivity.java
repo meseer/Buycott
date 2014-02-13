@@ -41,7 +41,7 @@ public class MakerListActivity extends ActionBarActivity implements MakerListFra
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putParcelable(MakerListFragment.CATALOG, getIntent().getParcelableExtra(MakerListFragment.CATALOG));
+            arguments.putParcelable(MakerListFragment.CATEGORY, getIntent().getParcelableExtra(MakerListFragment.CATEGORY));
             MakerListFragment fragment = new MakerListFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

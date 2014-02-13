@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
 
 /**
@@ -19,47 +20,32 @@ import com.ignite.boycott.io.model.Maker;
 public class BoycottListAdapter extends BaseAdapter {
     private BoycottList list;
     private LayoutInflater mInflater;
-    private String mFilter;
-    private BoycottList mFilteredList;
 
     public BoycottListAdapter(Context context, BoycottList list) {
         this.list = list;
         mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        mFilter = null;
-        mFilteredList = list;
     }
 
     @Override
     public int getCount() {
-        BoycottList filteredList = getFilteredList();
-        if (filteredList == null) return 0;
-        return filteredList.size();
+        if (list == null) return 0;
+        return list.getData().getCategories().length;
     }
 
     @Override
-    public Object getItem(int position) {
-        //use map position => item here
-        BoycottList filteredList = getFilteredList();
-        if (filteredList == null) return null;
-        return filteredList.getMaker(position);
+    public Category getItem(int position) {
+        if (list == null) return null;
+        return list.getCategory(position);
     }
 
     @Override
     public long getItemId(int position) {
-        Maker m = getFilteredList().getMaker(position);
-        return list.getPosition(m);
-    }
-
-    private BoycottList getFilteredList() {
-        if (list != null && mFilteredList == null) {
-            if (TextUtils.isEmpty(mFilter)) {
-                mFilteredList = list;
-            } else {
-                mFilteredList = list.filterMakers(new MakerContainsPredicate(mFilter));
-            }
+        Category c = list.getCategory(position);
+        for (int i = 0; i < getCount(); i++) {
+            if (getItem(i) == c) return i;
         }
-        return mFilteredList;
+        return -1;
     }
 
     @Override
@@ -67,14 +53,13 @@ public class BoycottListAdapter extends BaseAdapter {
         View view = null;
 
         if (convertView == null) {
-            view = mInflater.inflate(android.R.layout.simple_list_item_2, null);
+            view = mInflater.inflate(android.R.layout.simple_list_item_1, null);
         } else {
             view = convertView;
         }
 
-        Maker rowItem = (Maker) getItem(position);
-        ((TextView) view.findViewById(android.R.id.text2)).setText(rowItem.getOwner());
-        ((TextView) view.findViewById(android.R.id.text1)).setText(rowItem.getBrand());
+        Category rowItem = (Category) getItem(position);
+        ((TextView) view.findViewById(android.R.id.text1)).setText(rowItem.getTitle());
 
         return view;
     }
@@ -92,13 +77,5 @@ public class BoycottListAdapter extends BaseAdapter {
             notifyDataSetInvalidated();
         }
         return oldBoycottList;
-    }
-
-    public void setFilter(String s) {
-        if (!TextUtils.equals(s, mFilter)) {
-            mFilter = s;
-            mFilteredList = null;
-            notifyDataSetChanged();
-        }
     }
 }

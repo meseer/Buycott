@@ -2,7 +2,6 @@ package com.ignite.boycott.loader;
 
 import android.content.Context;
 import android.support.v4.content.Loader;
-import android.support.v7.appcompat.R;
 import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Log;
@@ -11,6 +10,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.util.AppUtils;
 import com.ignite.boycott.util.StreamUtils;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -27,7 +27,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -62,6 +61,8 @@ public class BlacklistLoader extends android.support.v4.content.AsyncTaskLoader<
 
     public BlacklistLoader(Context context) {
         super(context);
+        AppUtils.startMonitoring(context);
+
         mContext = context;
         client = new OkHttpClient();
         client.setReadTimeout(100, TimeUnit.SECONDS);

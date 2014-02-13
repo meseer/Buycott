@@ -1,10 +1,7 @@
 package com.ignite.boycott.ui;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -13,10 +10,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.crashlytics.android.Crashlytics;
-import com.ignite.boycott.BuildConfig;
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Category;
+import com.ignite.boycott.util.AppUtils;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
@@ -62,11 +58,7 @@ public class BoycottActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (BuildConfig.DEBUG) {
-            setUpStrictMode();
-        } else {
-            Crashlytics.start(this);
-        }
+        AppUtils.startMonitoring(this);
 
         setUpNavigationDrawerElements();
         setContentView(R.layout.activity_main);
@@ -79,28 +71,6 @@ public class BoycottActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-    }
-
-    private void setUpStrictMode() {
-        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                .detectDiskReads()
-                .detectDiskWrites()
-                .detectAll()
-                .penaltyLog()
-                .build());
-        StrictMode.VmPolicy.Builder vmPolicy = new StrictMode.VmPolicy.Builder()
-                .detectLeakedSqlLiteObjects()
-                .penaltyLog()
-                .penaltyDeath();
-        setUpStrictModeHoneycomb(vmPolicy);
-        StrictMode.setVmPolicy(vmPolicy.build());
-    }
-
-    @TargetApi(11)
-    private void setUpStrictModeHoneycomb(StrictMode.VmPolicy.Builder vmPolicy) {
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-            vmPolicy.detectLeakedClosableObjects();
-        }
     }
 
     private void setUpNavigationDrawerElements() {
@@ -200,8 +170,8 @@ public class BoycottActivity extends ActionBarActivity
     }
 
     @Override
-    public void onCategorySelected(Category item) {
-        MakerListFragment fragment = MakerListFragment.newInstance(item);
+    public void onCategorySelected(Category item, String filter) {
+        MakerListFragment fragment = MakerListFragment.newInstance(item, filter);
 
         if (mTwoPane) {
             getSupportFragmentManager().beginTransaction()
@@ -212,7 +182,7 @@ public class BoycottActivity extends ActionBarActivity
             // In single-pane mode, simply start the detail activity
             // for the selected item ID.
             Intent detailIntent = new Intent(this, MakerListActivity.class);
-            detailIntent.putExtra(CategoryFragment.CATEGORY, item);
+            detailIntent.putExtra(MakerListFragment.CATEGORY, item);
             startActivity(detailIntent);
         }
     }

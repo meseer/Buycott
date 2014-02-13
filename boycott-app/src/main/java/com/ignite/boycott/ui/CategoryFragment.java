@@ -8,8 +8,7 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
-import com.ignite.boycott.R;
-import com.ignite.boycott.adapter.BoycottCategoryAdapter;
+import com.ignite.boycott.adapter.BoycottListAdapter;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.loader.BlacklistLoader;
@@ -26,12 +25,12 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
-    public static final String CATEGORY = "CATEGORY";
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
     private OnFragmentInteractionListener mListener;
     private BoycottList mBoycottList;
-    private BoycottCategoryAdapter mAdapter;
+    private BoycottListAdapter mAdapter;
+    private String mFilter;
 
 
     @Override
@@ -69,7 +68,7 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
 
         this.setRetainInstance(true);
 
-        mAdapter = new BoycottCategoryAdapter(getActivity().getApplicationContext(), null);
+        mAdapter = new BoycottListAdapter(getActivity().getApplicationContext(), null);
 
         setListAdapter(mAdapter);
         setListShown(false);
@@ -99,7 +98,7 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mListener.onCategorySelected(mAdapter.getItem(position));
+        mListener.onCategorySelected(mAdapter.getItem(position), mFilter);
     }
 
     @Override
@@ -149,7 +148,7 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onCategorySelected(Category item);
+        void onCategorySelected(Category item, String filter);
     }
 
 }

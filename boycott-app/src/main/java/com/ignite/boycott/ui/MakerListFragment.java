@@ -3,8 +3,6 @@ package com.ignite.boycott.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -16,31 +14,30 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.ignite.boycott.R;
-import com.ignite.boycott.adapter.BoycottListAdapter;
-import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.adapter.CategoryAdapter;
 import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
-import com.ignite.boycott.loader.BlacklistLoader;
 
 /**
  * Created by mdelegan on 08.01.14.
  */
 public class MakerListFragment extends ListFragment
-        implements LoaderManager.LoaderCallbacks<BoycottList>, SearchView.OnQueryTextListener {
+        implements SearchView.OnQueryTextListener {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
     private static final String FILTER = "filterMakers";
-    public static final String CATALOG = "CATALOG";
-    private BoycottListAdapter mAdapter;
+    public static final String CATEGORY = "CATEGORY";
+    private CategoryAdapter mAdapter;
     private MakerListCallbacks mCallbacks;
     private int mActivatedPosition = ListView.INVALID_POSITION;
     private String mFilter;
     private SearchView mSearchView;
-    private BoycottList mBoycottList;
+    private Category mCategory;
 
-    public static MakerListFragment newInstance(Category category) {
+    public static MakerListFragment newInstance(Category category, String filter) {
         MakerListFragment fragment = new MakerListFragment();
         Bundle args = new Bundle();
-        args.putParcelable(CATALOG, category);
+        args.putParcelable(CATEGORY, category);
+        args.putString(FILTER, filter);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,6 +47,7 @@ public class MakerListFragment extends ListFragment
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mFilter = savedInstanceState.getString(FILTER);
+            mCategory = savedInstanceState.getParcelable(CATEGORY);
         }
     }
 
@@ -76,7 +74,7 @@ public class MakerListFragment extends ListFragment
         //dirty hack
         //get parent won't work on tablet devices where all 3 fragment will be in single activity
         //FIXME propagate message to root activity
-//        ((BoycottActivity) activity.getParent()).onSectionAttached(BoycottActivity.Fragments.CATALOG);
+//        ((BoycottActivity) activity.getParent()).onSectionAttached(BoycottActivity.Fragments.CATEGORY);
     }
 
     @Override
@@ -123,13 +121,11 @@ public class MakerListFragment extends ListFragment
 
         this.setRetainInstance(true);
 
-        mAdapter = new BoycottListAdapter(getActivity().getApplicationContext(), null);
+        mAdapter = new CategoryAdapter(getActivity().getApplicationContext(), mCategory);
         mAdapter.setFilter(mFilter);
 
         setListAdapter(mAdapter);
         setListShown(false);
-
-        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -144,30 +140,6 @@ public class MakerListFragment extends ListFragment
     }
 
     @Override
-    public Loader<BoycottList> onCreateLoader(int i, Bundle bundle) {
-        //singleton - doesn't work
-        return BlacklistLoader.instance(getActivity().getApplicationContext());
-//        return new BlacklistLoader(getActivity().getApplicationContext());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<BoycottList> cursorLoader, BoycottList boycottList) {
-        mBoycottList = boycottList;
-        mAdapter.swapBoycottList(boycottList);
-
-        if (isResumed()) {
-            setListShown(true);
-        } else {
-            setListShownNoAnimation(true);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<BoycottList> objectLoader) {
-        mAdapter.swapBoycottList(null);
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
@@ -176,7 +148,7 @@ public class MakerListFragment extends ListFragment
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        mCallbacks.onMakerSelected(mBoycottList.getMaker(position));
+        mCallbacks.onMakerSelected(mCategory.getMaker(position));
     }
 
     /**
