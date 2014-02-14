@@ -39,4 +39,5 @@
     <string name="search_title">Поиск</string>
     <string name="searching_toast">Ищем \'%s\'...</string>
     <string name="filtering_by">Отфильтровано по \'%s\'</string>
+    <string name="total_brands">%d брендов</string>
 </resources>

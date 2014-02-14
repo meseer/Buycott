@@ -2,7 +2,6 @@ package com.ignite.boycott.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.io.model.Category;
-import com.ignite.boycott.io.model.Maker;
 
 /**
  * Created by meseer on 12.02.14.
@@ -66,7 +64,7 @@ public class BoycottListAdapter extends BaseAdapter {
 
         Category rowItem = (Category) getItem(position);
         ((TextView) view.findViewById(R.id.text)).setText(rowItem.getTitle());
-        ((TextView) view.findViewById(R.id.text1)).setText(context.getString(R.string.total_makers, rowItem.size()));
+        ((TextView) view.findViewById(R.id.text1)).setText(context.getString(R.string.total_brands, rowItem.size()));
         ((ImageView) view.findViewById(R.id.image)).setImageResource(android.R.drawable.ic_menu_compass);
 
         return view;
