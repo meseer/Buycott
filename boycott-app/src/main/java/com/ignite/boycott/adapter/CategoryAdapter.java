@@ -7,16 +7,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by meseer on 12.02.14.
  * This class is not thread safe!
  */
 public class CategoryAdapter extends BaseAdapter {
+    private final Context context;
     private Category list;
     private LayoutInflater mInflater;
     private String mFilter;
@@ -24,6 +28,7 @@ public class CategoryAdapter extends BaseAdapter {
 
     public CategoryAdapter(Context context, Category list) {
         this.list = list;
+        this.context = context;
         mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         mFilter = null;
@@ -67,14 +72,21 @@ public class CategoryAdapter extends BaseAdapter {
         View view = null;
 
         if (convertView == null) {
-            view = mInflater.inflate(android.R.layout.simple_list_item_2, null);
+            view = mInflater.inflate(R.layout.maker_details_item, null);
         } else {
             view = convertView;
         }
 
         Maker rowItem = (Maker) getItem(position);
-        ((TextView) view.findViewById(android.R.id.text2)).setText(rowItem.getOwner());
-        ((TextView) view.findViewById(android.R.id.text1)).setText(rowItem.getBrand());
+        ((TextView) view.findViewById(R.id.text)).setText(rowItem.getBrand());
+        ((TextView) view.findViewById(R.id.text1)).setText(rowItem.getOwner());
+        if (!TextUtils.isEmpty(rowItem.getLogoURL())) {
+            Picasso.with(context).load(rowItem.getLogoURL())
+                    .resize(300, 50)
+                    .centerInside()
+                    .placeholder(R.drawable.ic_launcher)
+                    .into((ImageView) view.findViewById(R.id.image));
+        }
 
         return view;
     }

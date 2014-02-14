@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.BoycottList;
 import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
@@ -18,11 +20,15 @@ import com.ignite.boycott.io.model.Maker;
  * This class is not thread safe!
  */
 public class BoycottListAdapter extends BaseAdapter {
+    private final Context context;
     private BoycottList list;
     private LayoutInflater mInflater;
+    private int itemId;
 
     public BoycottListAdapter(Context context, BoycottList list) {
         this.list = list;
+        this.itemId = R.layout.category_item;
+        this.context = context;
         mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     }
@@ -53,13 +59,15 @@ public class BoycottListAdapter extends BaseAdapter {
         View view = null;
 
         if (convertView == null) {
-            view = mInflater.inflate(android.R.layout.simple_list_item_1, null);
+            view = mInflater.inflate(itemId, null);
         } else {
             view = convertView;
         }
 
         Category rowItem = (Category) getItem(position);
-        ((TextView) view.findViewById(android.R.id.text1)).setText(rowItem.getTitle());
+        ((TextView) view.findViewById(R.id.text)).setText(rowItem.getTitle());
+        ((TextView) view.findViewById(R.id.text1)).setText(context.getString(R.string.total_makers, rowItem.size()));
+        ((ImageView) view.findViewById(R.id.image)).setImageResource(android.R.drawable.ic_menu_compass);
 
         return view;
     }

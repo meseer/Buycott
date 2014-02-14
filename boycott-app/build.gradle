@@ -99,13 +99,14 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.0.+'
     compile 'com.android.support:support-v4:+'
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
     compile 'com.google.zxing:android-integration:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.squareup.okhttp:okhttp:+'
+    compile 'com.squareup.picasso:picasso:+'
     compile files('libs/CWAC-LoaderEx.jar')
 
     instrumentTestCompile 'com.squareup:fest-android:1.0.+'

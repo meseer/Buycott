@@ -8,10 +8,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Maker;
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -69,10 +71,16 @@ public class MakerDetailsFragment extends Fragment {
         ((TextView) view.findViewById(R.id.typeName)).setText("TYPE?");
         ((TextView) view.findViewById(R.id.affiliationName)).setText(maker.getDescription());
         if (TextUtils.isEmpty(maker.getAlternative())) {
-            //TODO: hide label or whole row
-//            ((TextView)view.findViewById(R.id.alternativeLabel)).setTex
+            view.findViewById(R.id.alternativeRow).setVisibility(View.GONE);
         } else {
             ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.getAlternative());
+        }
+        if (!TextUtils.isEmpty(maker.getLogoURL())) {
+            Picasso.with(getActivity().getApplicationContext())
+                    .load(maker.getLogoURL())
+                    .fit()
+                    .placeholder(R.drawable.ic_launcher)
+                    .into((ImageView) view.findViewById(R.id.logo));
         }
         return view;
     }

@@ -8,6 +8,11 @@
     android:showDividers="middle|end">
 
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/logo"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -103,6 +108,7 @@
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/alternativeRow"
         android:layout_marginTop="5dp">
 
         <TextView

@@ -21,7 +21,6 @@ import java.util.Map;
 public class BoycottActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         HistoryFragment.HistoryCallbacks,
-//        MakerListFragment.MakerListCallbacks,
         CategoryFragment.OnFragmentInteractionListener {
     public enum Fragments {
         CATALOG(0, R.string.title_section2),
