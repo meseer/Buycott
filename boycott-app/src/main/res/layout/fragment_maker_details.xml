@@ -11,7 +11,8 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/logo"/>
+        android:id="@+id/logo"
+        android:maxHeight="300dp"/>
 
     <TextView
         android:layout_width="fill_parent"

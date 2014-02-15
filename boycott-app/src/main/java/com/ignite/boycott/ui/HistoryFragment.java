@@ -37,7 +37,7 @@ public class HistoryFragment extends ListFragment implements LoaderManager.Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mAdapter = new SimpleCursorAdapter(this.getActivity(), R.layout.productrow, null,
+        mAdapter = new SimpleCursorAdapter(this.getActivity(), R.layout.scan_results_item, null,
                 new String[] { "Maker", "Owner", "Barcode", "ProductName"},
                 new int[] { R.id.maker, R.id.owner, R.id.barcode, R.id.title }, 0);
         setEmptyText(getString(R.string.history_hint));

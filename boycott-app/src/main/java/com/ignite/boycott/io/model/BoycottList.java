@@ -25,8 +25,10 @@ public class BoycottList {
     public int size() {
         int count = 0;
 
-        for (Category c : Data.getCategories())
-            count += c.getNodes().length;
+        if (Data != null) {
+            for (Category c : Data.getCategories())
+                count += c.getNodes().length;
+        }
 
         return count;
     }
@@ -34,11 +36,12 @@ public class BoycottList {
     public long getPosition(Maker maker) {
         //TODO: Save position in the maker itself
         int position = 0;
-        for (Category c : Data.getCategories()) {
-            for (Maker m : c.getNodes()) {
-                if (m == maker) return position;
-                position++;
-            }
+        if (Data != null) {
+            for (Category c : Data.getCategories())
+                for (Maker m : c.getNodes()) {
+                    if (m == maker) return position;
+                    position++;
+                }
         }
         throw new RuntimeException("Maker not found in the list");
     }

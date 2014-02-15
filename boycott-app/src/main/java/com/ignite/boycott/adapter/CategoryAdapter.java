@@ -3,6 +3,7 @@ package com.ignite.boycott.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +16,26 @@ import com.ignite.boycott.io.model.Category;
 import com.ignite.boycott.io.model.Maker;
 import com.squareup.picasso.Picasso;
 
+import static com.ignite.boycott.util.DisplayUtils.dpToPx;
+
 /**
  * Created by meseer on 12.02.14.
  * This class is not thread safe!
  */
 public class CategoryAdapter extends BaseAdapter {
     private final Context context;
-    private Category list;
+    private Category mCategory;
     private LayoutInflater mInflater;
     private String mFilter;
-    private Category mFilteredList;
+    private Category mFilteredCategory;
 
-    public CategoryAdapter(Context context, Category list) {
-        this.list = list;
+    public CategoryAdapter(Context context, Category mCategory) {
+        this.mCategory = mCategory;
         this.context = context;
         mInflater = (LayoutInflater)
                 context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         mFilter = null;
-        mFilteredList = list;
+        mFilteredCategory = mCategory;
     }
 
     @Override
@@ -53,26 +56,26 @@ public class CategoryAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         Maker m = getFilteredList().getMaker(position);
-        return list.getPosition(m);
+        return mCategory.getPosition(m);
     }
 
     private Category getFilteredList() {
-        if (list != null && mFilteredList == null) {
+        if (mCategory != null && mFilteredCategory == null) {
             if (TextUtils.isEmpty(mFilter)) {
-                mFilteredList = list;
+                mFilteredCategory = mCategory;
             } else {
-                mFilteredList = list.filterMakers(new MakerContainsPredicate(mFilter));
+                mFilteredCategory = mCategory.filterMakers(new MakerContainsPredicate(mFilter));
             }
         }
-        return mFilteredList;
+        return mFilteredCategory;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
+        View view;
 
         if (convertView == null) {
-            view = mInflater.inflate(R.layout.maker_details_item, null);
+            view = mInflater.inflate(R.layout.maker_list_item, null);
         } else {
             view = convertView;
         }
@@ -81,11 +84,13 @@ public class CategoryAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.text)).setText(rowItem.getBrand());
         ((TextView) view.findViewById(R.id.text1)).setText(rowItem.getOwner());
         if (!TextUtils.isEmpty(rowItem.getLogoURL())) {
+            ImageView imageView = (ImageView) view.findViewById(R.id.image);
+            DisplayMetrics m = context.getResources().getDisplayMetrics();
             Picasso.with(context).load(rowItem.getLogoURL())
-                    .resize(300, 50)
+                    .resize(dpToPx(300, m), dpToPx(50, m))
                     .centerInside()
                     .placeholder(R.drawable.ic_launcher)
-                    .into((ImageView) view.findViewById(R.id.image));
+                    .into(imageView);
         }
 
         return view;
@@ -94,8 +99,15 @@ public class CategoryAdapter extends BaseAdapter {
     public void setFilter(String s) {
         if (!TextUtils.equals(s, mFilter)) {
             mFilter = s;
-            mFilteredList = null;
+            mFilteredCategory = null;
             notifyDataSetChanged();
         }
+    }
+
+    public void switchCategory(Category item, String filter) {
+        mCategory = item;
+        mFilteredCategory = null;
+        mFilter = filter;
+        notifyDataSetChanged();
     }
 }

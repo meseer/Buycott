@@ -90,7 +90,7 @@ public class ScanResultsFragment extends ListFragment {
             barcode = getArguments().getString(ARG_BARCODE);
         }
 
-        mAdapter = new SimpleAdapter(getActivity(), data, R.layout.productrow,
+        mAdapter = new SimpleAdapter(getActivity(), data, R.layout.scan_results_item,
                 new String[] {ID, OWNER, MAKER, TITLE},
                 new int[] { R.id.barcode, R.id.owner, R.id.maker, R.id.title });
 
@@ -106,7 +106,8 @@ public class ScanResultsFragment extends ListFragment {
             }
             if (args.containsKey(ARG_MAKERS)) {
                 List<MakerFrequency> mfList = args.getParcelableArrayList(ARG_MAKERS);
-                for (MakerFrequency mf : mfList) result.add(row(mf));
+                if (mfList != null)
+                    for (MakerFrequency mf : mfList) result.add(row(mf));
             }
         }
         return result;

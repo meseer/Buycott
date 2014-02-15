@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Maker;
 import com.squareup.picasso.Picasso;
-
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -57,7 +57,7 @@ public class MakerDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            maker = (Maker) getArguments().getParcelable(MAKER);
+            maker = getArguments().getParcelable(MAKER);
         }
     }
 
@@ -76,9 +76,13 @@ public class MakerDetailsFragment extends Fragment {
             ((TextView) view.findViewById(R.id.alternativeName)).setText(maker.getAlternative());
         }
         if (!TextUtils.isEmpty(maker.getLogoURL())) {
+            DisplayMetrics displayMetrics = getActivity().getApplicationContext().getResources().getDisplayMetrics();
+            int w = displayMetrics.widthPixels;
+            int h = displayMetrics.heightPixels / 5;
             Picasso.with(getActivity().getApplicationContext())
                     .load(maker.getLogoURL())
-                    .fit()
+                    .resize(w, h)
+                    .centerInside()
                     .placeholder(R.drawable.ic_launcher)
                     .into((ImageView) view.findViewById(R.id.logo));
         }

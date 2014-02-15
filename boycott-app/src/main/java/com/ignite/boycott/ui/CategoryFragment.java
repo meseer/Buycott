@@ -50,6 +50,7 @@ public class CategoryFragment extends ListFragment implements LoaderManager.Load
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
+        setActivateOnItemClick(true);
     }
 
     private void setActivatedPosition(int position) {

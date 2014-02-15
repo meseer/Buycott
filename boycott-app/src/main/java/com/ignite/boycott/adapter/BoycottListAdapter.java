@@ -33,7 +33,10 @@ public class BoycottListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (list == null) return 0;
+        if (list == null ||
+            list.getData() == null ||
+            list.getData().getCategories() == null) return 0;
+
         return list.getData().getCategories().length;
     }
 
@@ -54,7 +57,7 @@ public class BoycottListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
+        View view;
 
         if (convertView == null) {
             view = mInflater.inflate(itemId, null);
@@ -62,7 +65,7 @@ public class BoycottListAdapter extends BaseAdapter {
             view = convertView;
         }
 
-        Category rowItem = (Category) getItem(position);
+        Category rowItem = getItem(position);
         ((TextView) view.findViewById(R.id.text)).setText(rowItem.getTitle());
         ((TextView) view.findViewById(R.id.text1)).setText(context.getString(R.string.total_brands, rowItem.size()));
         ((ImageView) view.findViewById(R.id.image)).setImageResource(android.R.drawable.ic_menu_compass);

@@ -176,6 +176,12 @@ public class MakerListFragment extends ListFragment implements SearchView.OnQuer
         mActivatedPosition = position;
     }
 
+    public void updateFor(Category item, String filter) {
+        mCategory = item;
+        mFilter = filter;
+        mAdapter.switchCategory(item, filter);
+    }
+
     public interface MakerListCallbacks {
         public void onMakerSelected(Maker maker);
     }

@@ -12,16 +12,22 @@ import android.view.MenuItem;
 
 import com.ignite.boycott.R;
 import com.ignite.boycott.io.model.Category;
+import com.ignite.boycott.io.model.Maker;
 import com.ignite.boycott.util.AppUtils;
 
 import java.lang.InstantiationException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.ignite.boycott.ui.BoycottActivity.Fragments.CATALOG;
+import static com.ignite.boycott.ui.BoycottActivity.Fragments.HISTORY;
+
 public class BoycottActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         HistoryFragment.HistoryCallbacks,
-        CategoryFragment.OnFragmentInteractionListener {
+        CategoryFragment.OnFragmentInteractionListener,
+        MakerListFragment.MakerListCallbacks {
+
     public enum Fragments {
         CATALOG(0, R.string.title_section2),
         HISTORY(1, R.string.title_section3);
@@ -74,8 +80,8 @@ public class BoycottActivity extends ActionBarActivity
 
     private void setUpNavigationDrawerElements() {
         drawerFragmentClassMap = new HashMap<>();
-        drawerFragmentClassMap.put(fragmentTag(Fragments.CATALOG), CategoryFragment.class);
-        drawerFragmentClassMap.put(fragmentTag(Fragments.HISTORY), HistoryFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(CATALOG), SlidingPaneFragment.class);
+        drawerFragmentClassMap.put(fragmentTag(HISTORY), HistoryFragment.class);
     }
 
     @Override
@@ -172,7 +178,10 @@ public class BoycottActivity extends ActionBarActivity
     public void onCategorySelected(Category item, String filter) {
         MakerListFragment fragment = MakerListFragment.newInstance(item, filter);
 
-        if (mTwoPane) {
+        if (findViewById(R.id.maker_list_sliding) != null) {
+            MakerListFragment f = (MakerListFragment) getSupportFragmentManager().findFragmentById(R.id.maker_list);
+            f.updateFor(item, filter);
+        }else if (mTwoPane) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.maker_list_container, fragment)
                     .addToBackStack(null)
@@ -186,4 +195,22 @@ public class BoycottActivity extends ActionBarActivity
         }
     }
 
+    @Override
+    public void onMakerSelected(Maker maker) {
+        MakerDetailsFragment fragment = MakerDetailsFragment.newInstance(maker);
+        if (false/*mTwoPane*/) {
+            // In two-pane mode, show the detail view in this activity by
+            // adding or replacing the detail fragment using a
+            // fragment transaction.
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.maker_detail_container, fragment)
+                    .commit();
+        } else {
+            // In single-pane mode, simply start the detail activity
+            // for the selected item ID.
+            Intent detailIntent = new Intent(this, MakerDetailActivity.class);
+            detailIntent.putExtra(MakerDetailsFragment.MAKER, maker);
+            startActivity(detailIntent);
+        }
+    }
 }
