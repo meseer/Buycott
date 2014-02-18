@@ -1,7 +1,9 @@
 package com.ignite.boycott.ui;
 
 import android.content.Intent;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -17,20 +19,26 @@ import com.ignite.boycott.dao.ProductsDao;
 import com.ignite.boycott.dao.model.HistoryEntry;
 import com.ignite.boycott.dao.model.Product;
 import com.ignite.boycott.dao.model.MakerFrequency;
+import com.ignite.boycott.io.model.BoycottList;
+import com.ignite.boycott.loader.BlacklistLoader;
 import com.ignite.boycott.reporting.Reporting;
 import com.ignite.boycott.reporting.crashlytics.CrashlyticsReporting;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 //TODO: Allow opening navigation drawer from here ??
 public class ScanResultsActivity extends ActionBarActivity implements MakerNotFoundFragment.MakerNotFoundCallbacks,
-        ScanResultsFragment.ScanResultCallbacks {
+        ScanResultsFragment.ScanResultCallbacks, LoaderManager.LoaderCallbacks<BoycottList> {
 
     public static final String BARCODE = "barcode";
     private final Reporting reporting = new CrashlyticsReporting();
     private String mBarcode;
     private ProductsDao mDb;
     private HistoryDao historyDao;
+    private BoycottList mBlacklist;
+    private Semaphore blacklistAvailable = new Semaphore(0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +68,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
             }
         }
 
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -97,7 +106,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
             //check blacklisted status according to maker code, not maker name (create mapping between blacklisted maker name and codes)
             //TODO: Add to History in background
             historyDao.log(new HistoryEntry(product));
-            return ScanResultsFragment.newInstance(product);
+            return ScanResultsFragment.newInstance(product, getBoycottList());
         }
 
         //TODO: Add to History in background
@@ -105,7 +114,7 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         ArrayList<MakerFrequency> makers = mDb.getMakers(mBarcode);
         if (makers != null && !makers.isEmpty()) {
             //barcode not in the database => show blacklist status for the maker names related to the maker code (sorted), add option to choose correct maker name (or write) and specify product name
-            return ScanResultsFragment.newInstance(makers, mBarcode);
+            return ScanResultsFragment.newInstance(makers, mBarcode, getBoycottList());
         }
 
         //barcode not in the database and maker is unknown => show MakerNotFounFragment
@@ -153,6 +162,38 @@ public class ScanResultsActivity extends ActionBarActivity implements MakerNotFo
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public Loader<BoycottList> onCreateLoader(int i, Bundle bundle) {
+        return BlacklistLoader.instance(getApplicationContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<BoycottList> loader, BoycottList list) {
+        this.mBlacklist = list;
+        blacklistAvailable.release();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<BoycottList> loader) {
+        this.mBlacklist = null;
+        blacklistAvailable.acquireUninterruptibly();
+    }
+
+    private BoycottList getBoycottList() {
+        try {
+            blacklistAvailable.tryAcquire(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            Toast.makeText(getApplicationContext(), getString(R.string.owner_loading_timeout), Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        try {
+            return mBlacklist;
+        } finally {
+            blacklistAvailable.release();
+        }
     }
 
     @Override

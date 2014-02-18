@@ -180,7 +180,12 @@ public class BoycottActivity extends ActionBarActivity
 
         if (findViewById(R.id.maker_list_sliding) != null) {
             MakerListFragment f = (MakerListFragment) getSupportFragmentManager().findFragmentById(R.id.maker_list);
-            f.updateFor(item, filter);
+            if (f == null) {
+                f = MakerListFragment.newInstance(item, filter);
+                getSupportFragmentManager().beginTransaction().add(R.id.maker_list, f);
+            } else {
+                f.updateFor(item, filter);
+            }
         }else if (mTwoPane) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.maker_list_container, fragment)

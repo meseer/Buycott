@@ -42,4 +42,5 @@
     <string name="filtering_by">Filtering by \'%s\'</string>
     <string name="total_brands">%d brands</string>
     <string name="maker_logo">Maker Logo</string>
+    <string name="owner_loading_timeout">Unable to determite boycott status for the maker</string>
 </resources>

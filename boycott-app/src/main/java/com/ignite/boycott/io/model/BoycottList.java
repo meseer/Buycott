@@ -1,11 +1,14 @@
 package com.ignite.boycott.io.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.android.internal.util.Predicate;
 
 /**
 * Created by meseer on 12.02.14.
 */
-public class BoycottList {
+public class BoycottList implements Parcelable {
     private Data Data;
 
     public Data getData() {
@@ -58,4 +61,44 @@ public class BoycottList {
 
         throw new RuntimeException("Category index out of bounds");
     }
+
+    public Maker findMaker(String maker) {
+        BoycottList list = filterMakers(new Predicate<Maker>() {
+            @Override
+            public boolean apply(Maker maker) {
+                return maker.getBrand().equals(maker);
+            }
+        });
+
+        if (list.size() == 0) return null;
+        return list.getMaker(0);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(Data, 0);
+    }
+
+    public BoycottList() {}
+
+    BoycottList(Parcel in) {
+        this.Data = in.readParcelable(null);
+    }
+
+    public static final Creator<BoycottList> CREATOR = new Creator<BoycottList>() {
+        @Override
+        public BoycottList createFromParcel(Parcel source) {
+            return new BoycottList(source);
+        }
+
+        @Override
+        public BoycottList[] newArray(int size) {
+            return new BoycottList[size];
+        }
+    };
 }

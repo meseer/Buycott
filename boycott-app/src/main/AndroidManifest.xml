@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.BoycottActivity"
+            android:name="com.ignite.boycott.ui.BoycottActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,24 +22,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MakerListActivity"
-            android:parentActivityName=".ui.BoycottActivity" >
+            android:name="com.ignite.boycott.ui.MakerListActivity"
+            android:parentActivityName="com.ignite.boycott.ui.BoycottActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ignite.boycott.ui.BoycottActivity" />
         </activity>
         <activity
-            android:name=".ui.MakerDetailActivity"
+            android:name="com.ignite.boycott.ui.MakerDetailActivity"
             android:label="@string/title_maker_detail"
-            android:parentActivityName=".ui.MakerListActivity" >
+            android:parentActivityName="com.ignite.boycott.ui.MakerListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ignite.boycott.ui.BoycottActivity" />
         </activity>
         <activity
-            android:name=".ui.ScanResultsActivity"
+            android:name="com.ignite.boycott.ui.ScanResultsActivity"
             android:label="@string/title_activity_scan_results"
-            android:parentActivityName=".ui.BoycottActivity"
+            android:parentActivityName="com.ignite.boycott.ui.BoycottActivity"
             android:windowSoftInputMode="adjustResize" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -50,11 +50,7 @@
             android:name="com.crashlytics.ApiKey"
             android:value="ac0a316a616e8e302410ac8567057c376d4cc9e3" />
 
-        <service
-            android:name="com.ignite.boycott.service.BlacklistUpdaterService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
+        <service android:name="com.ignite.boycott.service.BlacklistUpdaterService" />
     </application>
 
 </manifest>
