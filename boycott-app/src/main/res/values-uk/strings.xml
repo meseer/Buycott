@@ -41,4 +41,5 @@
     <string name="filtering_by">Відфільтровано за \'%s\'</string>
     <string name="total_brands">%d брендів</string>
     <string name="maker_logo">Логотип</string>
+    <string name="owner_loading_timeout">Неможливо визначити виробника</string>
 </resources>
