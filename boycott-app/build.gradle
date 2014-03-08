@@ -6,7 +6,7 @@ buildscript {
         maven { url 'http://download.crashlytics.com/maven' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.8.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
         classpath 'com.stanfy.spoon:spoon-gradle-plugin:0.9.+'
     }
@@ -109,9 +109,9 @@ dependencies {
     compile 'com.squareup.picasso:picasso:+'
     compile files('libs/CWAC-LoaderEx.jar')
 
-    instrumentTestCompile 'com.squareup:fest-android:1.0.+'
-//    testCompile 'junit:junit:4.+'
-//    testCompile 'com.pivotallabs:robolectric:2.+'
+    androidTestCompile 'com.squareup:fest-android:1.0.+'
+    androidTestCompile 'junit:junit:4.+'
+//    androidTestCompile 'com.pivotallabs:robolectric:2.+'
 
     //TODO: Investigate how to make this work, see http://x.co/3XxAL
     //    compile module('commonsguy:cwac-loaderex:0.7.3') {
